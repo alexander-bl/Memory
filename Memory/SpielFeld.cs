@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Memory {
-    internal class SpielFeld {
+    public class SpielFeld {
         Spieler _spieler;
         int[] _feld;
 
