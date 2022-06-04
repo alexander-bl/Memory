@@ -1,5 +1,5 @@
 ﻿namespace Memory {
-    internal class KI : Spieler {
+    public class KI : Spieler {
         int _difficulty;
 
         public int Difficulty {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Memory {
-    internal class Mensch : Spieler {
+    public class Mensch : Spieler {
         string _name;
 
         public string Name {
