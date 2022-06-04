@@ -8,7 +8,6 @@ namespace Memory {
     public class SpielFeld {
         Spieler _spieler;
         int[] _feld;
-        int test;
 
         public Spieler Spieler {
             get => _spieler;
