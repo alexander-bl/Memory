@@ -21,5 +21,10 @@ namespace Memory {
                 _feld = value;
             }
         }
+
+        public SpielFeld(Spieler spieler, int[] feld) {
+            Spieler = spieler;
+            Feld = feld;
+        }
     }
 }
