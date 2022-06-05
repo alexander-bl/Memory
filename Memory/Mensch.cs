@@ -19,7 +19,7 @@ namespace Memory {
             }
         }
 
-        public override void choice() {
+        public override void FeldAnschauen() {
 
         }
     }

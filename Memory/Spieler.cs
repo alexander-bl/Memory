@@ -1,30 +1,40 @@
-﻿namespace Memory {
-    public class Spieler {
-        int _highscore;
-        int _punkte;
+﻿using System;
 
-        public Spieler(int highscore, int punkte) {
+namespace Memory {
+    abstract public class Spieler {
+        int _highscore;
+        int _score;
+        //TODO Speichern der bereits gesehenen Karten
+
+        public Spieler(int highscore, int score) {
             Highscore = highscore;
-            Punkte = punkte;
+            Score = score;
         }
 
         public int Highscore {
             get => _highscore;
             set {
+                if (value < 0) {
+                    throw new ArgumentOutOfRangeException("Highscore ist kleiner als 0!");
+                }
                 _highscore = value;
             }
         }
 
-        public int Punkte {
-            get => _punkte;
+        public int Score {
+            get => _score;
             set {
-                _punkte = value;
+                if (value < 0) {
+                    throw new ArgumentOutOfRangeException("Score ist kleiner als 0!");
+                }
+                _score = value;
             }
         }
 
-        public virtual void choice() {
-
-
+        public virtual void FelderMerken() {
+            
         }
+
+        public abstract void FeldAnschauen();
     }
 }
