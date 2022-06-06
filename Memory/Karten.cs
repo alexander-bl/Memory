@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Memory {
     public class Karten {
+
         static string[] _karten;
+
+        
     }
 }
