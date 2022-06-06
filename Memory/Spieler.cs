@@ -4,7 +4,6 @@ namespace Memory {
     abstract public class Spieler {
         int _highscore;
         int _score;
-        Karten _karten;
         //TODO Speichern der bereits gesehenen Karten
 
         public Spieler(int highscore, int score) {
