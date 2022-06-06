@@ -1,6 +1,7 @@
 ﻿namespace Memory {
     public class KI : Spieler {
         int _difficulty;
+        int t;
 
         public int Difficulty {
             get => _difficulty;
