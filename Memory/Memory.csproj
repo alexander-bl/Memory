@@ -59,7 +59,6 @@
     <Compile Include="KI.cs" />
     <Compile Include="Mensch.cs" />
     <Compile Include="Spieler.cs" />
-    <Compile Include="Feld.cs" />
     <Compile Include="SpielFeld.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
