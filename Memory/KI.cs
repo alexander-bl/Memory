@@ -9,7 +9,7 @@
             }
         }
 
-        public KI(int difficulty, int highscore, int punkte) :base(highscore, punkte) {
+        public KI(int difficulty, int highscore, int punkte) :base() {
             Difficulty = difficulty;
         }
 
@@ -17,8 +17,8 @@
         
         }
 
-        public override void FelderMerken() {
-            base.FelderMerken();
+        public override void Gedaechtnis() {
+            
         }
     }
 }

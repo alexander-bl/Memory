@@ -8,7 +8,7 @@ namespace Memory {
     public class Mensch : Spieler {
         string _name;
 
-        public Mensch(string name, int highscore, int punkte) :base(highscore, punkte){
+        public Mensch(string name, int highscore, int punkte) :base(){
             Name = name;
         }
 
@@ -21,6 +21,10 @@ namespace Memory {
 
         public override void FeldAnschauen() {
 
+        }
+
+        public override void Gedaechtnis() {
+            
         }
     }
 }
