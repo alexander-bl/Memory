@@ -31,7 +31,7 @@ namespace Memory {
             
         }
 
-        public string GetName() {
+        public override string GetName() {
             return Name;
         }
     }

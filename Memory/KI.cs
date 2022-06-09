@@ -6,16 +6,16 @@
 
 namespace Memory {
     public class KI : Spieler {
-        int _difficulty;
+        string _difficulty;
 
-        public int Difficulty {
+        public string Difficulty {
             get => _difficulty;
             set {
                 _difficulty = value;
             }
         }
 
-        public KI(int difficulty) :base() {
+        public KI(string difficulty) :base() {
             Difficulty = difficulty;
         }
 
@@ -27,7 +27,7 @@ namespace Memory {
             
         }
 
-        public int GetDifficulty() {
+        public override int GetName() {
             return Difficulty;
         }
     }

@@ -38,5 +38,7 @@ namespace Memory {
         public abstract void Gedaechtnis();
 
         public abstract void FeldAnschauen();
+
+        public abstract string GetName();
     }
 }
