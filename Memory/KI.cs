@@ -9,7 +9,7 @@
             }
         }
 
-        public KI(int difficulty, int highscore, int punkte) :base() {
+        public KI(int difficulty) :base() {
             Difficulty = difficulty;
         }
 

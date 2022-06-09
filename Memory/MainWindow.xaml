@@ -7,6 +7,47 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
         
+        <DockPanel Height="20" Grid.RowSpan="2" VerticalAlignment="Top">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="_Spiel">
+                    <MenuItem Header="_Neues Spiel" Click="MenuItem_NeuesSpiel_Click"/>
+                    <MenuItem Header="_Highscores" Click="MenuItem_Highscore_Click"/>
+                    <Separator />
+                    <MenuItem Header="_Hilfe" Click="MenuItem_Hilfe_Click"/>
+                </MenuItem>
+                <MenuItem Header="_Hinweis" Click="MenuItem_Hinweis_Click"/>
+            </Menu>
+        </DockPanel>
+        
+        <Button Grid.Column="1" Click="Button_Click">Button 0</Button>
+        <Button Grid.Column="2" Click="Button_Click_1">Button 1</Button>
+        <Button Grid.Column="3" Click="Button_Click_2">Button 2</Button>
+        <Button Grid.Column="4" Click="Button_Click_3">Button 3</Button>
+        <Button Grid.Column="1" Grid.Row="1" Click="Button_Click_4">Button 4</Button>
+        <Button Grid.Column="2" Grid.Row="1" Click="Button_Click_5">Button 5</Button>
+        <Button Grid.Column="3" Grid.Row="1" Click="Button_Click_6">Button 6</Button>
+        <Button Grid.Column="4" Grid.Row="1" Click="Button_Click_7">Button 7</Button>
+        <Button Grid.Column="1" Grid.Row="2" Click="Button_Click_8">Button 8</Button>
+        <Button Grid.Column="2" Grid.Row="2" Click="Button_Click_9">Button 9</Button>
+        <Button Grid.Column="3" Grid.Row="2" Click="Button_Click_10">Button 10</Button>
+        <Button Grid.Column="4" Grid.Row="2" Click="Button_Click_11">Button 11</Button>
+        <Button Grid.Column="1" Grid.Row="3" Click="Button_Click_12">Button 12</Button>
+        <Button Grid.Column="2" Grid.Row="3" Click="Button_Click_13">Button 13</Button>
+        <Button Grid.Column="3" Grid.Row="3" Click="Button_Click_14">Button 14</Button>
+        <Button Grid.Column="4" Grid.Row="3" Click="Button_Click_15">Button 15</Button>
     </Grid>
 </Window>
