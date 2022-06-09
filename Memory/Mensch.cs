@@ -30,5 +30,9 @@ namespace Memory {
         public override void Gedaechtnis() {
             
         }
+
+        public string GetName() {
+            return Name;
+        }
     }
 }

@@ -20,11 +20,15 @@ namespace Memory {
         }
 
         public override void FeldAnschauen() { 
-        
+            
         }
 
         public override void Gedaechtnis() {
             
+        }
+
+        public int GetDifficulty() {
+            return Difficulty;
         }
     }
 }
