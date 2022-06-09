@@ -6,18 +6,8 @@ using System.Threading.Tasks;
 
 namespace Memory {
     public class SpielFeld {
-        Spieler _spieler;
         string[,] _feld;
         Karten _karten;
-
-
-
-        public Spieler Spieler {
-            get => _spieler;
-            set {
-                _spieler = value;
-            }
-        }
 
         public string[,] Feld {
             get => _feld;
@@ -28,17 +18,15 @@ namespace Memory {
 
         public Karten Karten { get => _karten; set => _karten = value; }
 
-        public SpielFeld(Spieler spieler, string[,] feld) {
-            Spieler = spieler;
-            Feld = feld;
+        public SpielFeld(Karten _karten) {
+            Feld = _feld;
+            Karten = _karten;
         }
 
         public void ErzeugeSpielfeld() {
 
             Random rnd = new Random();
             int s = 4, z = 4;
-            //string[] Begriffe = new string[8] { "Informatik", "C#", "Hello World", "Array", "Polymorphie", "Vererbung", "Visual Studio", "Properties" };
-
 
             int[] anzahl = new int[8];
 
@@ -69,7 +57,8 @@ namespace Memory {
 
                     } while (!ok);
 
-                    Feld[i, n] = [zufallszahl];
+                    string[] Begriffe = Karten.GetKarten();
+                    Feld[i, n] = Begriffe[zufallszahl];
 
                 }
             }
