@@ -1,5 +1,9 @@
 ﻿using System;
-
+/*
+ * Elternklasse zu Mensch und KI
+ * Autoren: Alexander Bletsch, Anna Stork
+ * Erstellt: 09.06.22
+ */
 namespace Memory {
     abstract public class Spieler {
         int _score;

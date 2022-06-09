@@ -1,4 +1,10 @@
-﻿namespace Memory {
+﻿/*
+ * Kindklasse von Spieler
+ * Autoren: Alexander Bletsch, Anna Stork
+ * Erstellt: 09.06.22
+ */
+
+namespace Memory {
     public class KI : Spieler {
         int _difficulty;
 
