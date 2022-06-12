@@ -60,6 +60,7 @@
     </Compile>
     <Compile Include="Karten.cs" />
     <Compile Include="KI.cs" />
+    <Compile Include="KnownCard.cs" />
     <Compile Include="Mensch.cs" />
     <Compile Include="Spieler.cs" />
     <Compile Include="SpielFeld.cs" />
@@ -94,6 +95,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

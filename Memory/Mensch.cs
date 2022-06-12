@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 /*
  * Kindklasse von Spieler
  * Autoren: Alexander Bletsch, Anna Stork
@@ -12,14 +8,18 @@ namespace Memory {
     public class Mensch : Spieler {
         string _name;
 
-        public Mensch(string name) :base(){
+        public Mensch(string name, bool aktiveRunde) : base(aktiveRunde) {
             Name = name;
         }
 
         public string Name {
             get => _name;
             set {
-                _name = value;
+                if (value.Length < 2) {
+                    throw new ArgumentOutOfRangeException("Name ist zu kurz! Mindestens 2 Zeichen lang.");
+                }
+                _name = value ?? throw new ArgumentNullException(
+                                    "Kein Name Vorhanden");
             }
         }
 
@@ -27,8 +27,9 @@ namespace Memory {
 
         }
 
-        public override void Gedaechtnis() {
-            
+        public override void Gedaechtnis(string karte, int zeile, int spalte) {
+            base.Gedaechtnis(karte, zeile, spalte);
+
         }
 
         public override string GetName() {

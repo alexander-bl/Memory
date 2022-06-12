@@ -11,11 +11,17 @@ namespace Memory {
         public string Difficulty {
             get => _difficulty;
             set {
-                _difficulty = value;
+                if (value == "Normal" || value == "Schwer") {
+                    _difficulty = value ?? throw new System.ArgumentNullException(
+                                                "Kein Schwierigkeitsgrad vorhanden!");
+                } else {
+                    throw new System.ArgumentException("Schwierigkeitsgrad ist nicht Normal oder Schwer!");
+                }
+                
             }
         }
 
-        public KI(string difficulty) :base() {
+        public KI(string difficulty, bool aktiveRunde) :base(aktiveRunde) {
             Difficulty = difficulty;
         }
 
@@ -23,11 +29,12 @@ namespace Memory {
             
         }
 
-        public override void Gedaechtnis() {
-            
+        public override void Gedaechtnis(string karte, int zeile, int spalte) {
+            base.Gedaechtnis(karte, zeile, spalte);
+
         }
 
-        public override int GetName() {
+        public override string GetName() {
             return Difficulty;
         }
     }
