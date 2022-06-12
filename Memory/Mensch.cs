@@ -23,10 +23,6 @@ namespace Memory {
             }
         }
 
-        public override void FeldAnschauen() {
-
-        }
-
         public override void Gedaechtnis(string karte, int zeile, int spalte) {
             base.Gedaechtnis(karte, zeile, spalte);
 
@@ -34,6 +30,22 @@ namespace Memory {
 
         public override string GetName() {
             return Name;
+        }
+
+        public override void GedaechnisAbrufen() {
+
+        }
+
+        public override void Random() {
+
+        }
+
+        public override void GedaechnisLoeschen() {
+
+        }
+
+        public override void ButtonDeaktivieren() {
+
         }
     }
 }

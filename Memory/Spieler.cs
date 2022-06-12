@@ -9,6 +9,7 @@ namespace Memory {
     abstract public class Spieler {
         int _score;
         List <KnownCard> _geseheneKarten;
+        
         static int _runde;
         bool _aktiveRunde;
 
@@ -54,7 +55,13 @@ namespace Memory {
             GeseheneKarten.Add(neueKarte);
         }
 
-        public abstract void FeldAnschauen();
+        public abstract void GedaechnisAbrufen();
+
+        public abstract void Random();
+
+        public abstract void GedaechnisLoeschen();
+
+        public abstract void ButtonDeaktivieren();
 
         public abstract string GetName();
     }
