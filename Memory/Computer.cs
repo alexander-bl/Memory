@@ -1,27 +1,29 @@
-﻿/*
+﻿using System;
+/*
  * Kindklasse von Spieler
  * Autoren: Alexander Bletsch, Anna Stork
  * Erstellt: 09.06.22
  */
 
 namespace Memory {
-    public class KI : Spieler {
+    public class Computer : Spieler {
         string _difficulty;
 
         public string Difficulty {
             get => _difficulty;
             set {
                 if (value == "Normal" || value == "Schwer") {
-                    _difficulty = value ?? throw new System.ArgumentNullException(
+                    _difficulty = value ?? throw new ArgumentNullException(
                                                 "Kein Schwierigkeitsgrad vorhanden!");
                 } else {
-                    throw new System.ArgumentException("Schwierigkeitsgrad ist nicht Normal oder Schwer!");
+                    throw new ArgumentException(
+                        "Schwierigkeitsgrad ist nicht Normal oder Schwer!");
                 }
-                
+
             }
         }
 
-        public KI(string difficulty, bool aktiveRunde) :base(aktiveRunde) {
+        public Computer(string difficulty, bool aktiveRunde) : base(aktiveRunde) {
             Difficulty = difficulty;
         }
 
@@ -32,10 +34,6 @@ namespace Memory {
 
         public override string GetName() {
             return Difficulty;
-        }
-
-        public override void GedaechnisAbrufen() {
-
         }
 
         public override void Random() {

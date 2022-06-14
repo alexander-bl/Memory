@@ -7,9 +7,11 @@
 namespace Memory {
     public class Mensch : Spieler {
         string _name;
+        int _score;
 
         public Mensch(string name, bool aktiveRunde) : base(aktiveRunde) {
             Name = name;
+            Score = 0;
         }
 
         public string Name {
@@ -23,6 +25,8 @@ namespace Memory {
             }
         }
 
+        public int Score { get => _score; set => _score = value; }
+
         public override void Gedaechtnis(string karte, int zeile, int spalte) {
             base.Gedaechtnis(karte, zeile, spalte);
 
@@ -30,10 +34,6 @@ namespace Memory {
 
         public override string GetName() {
             return Name;
-        }
-
-        public override void GedaechnisAbrufen() {
-
         }
 
         public override void Random() {
