@@ -30,6 +30,7 @@
                     <MenuItem Header="_Hilfe" Click="MenuItem_Hilfe_Click"/>
                 </MenuItem>
                 <MenuItem Header="_Hinweis" Click="MenuItem_Hinweis_Click"/>
+                <MenuItem Header="_Zufällige Karte" Click="MenuItem_Zufall_Click"/>
             </Menu>
         </DockPanel>
         <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Vertical">
@@ -45,35 +46,41 @@
                 </Label>
                 <TextBox MinWidth="130" IsReadOnly="True" x:Name="tBoxPunkte"/>
             </StackPanel>
+        </StackPanel>
+        <StackPanel Grid.Column="0" Grid.Row="2" Orientation="Vertical">
             <StackPanel Orientation="Horizontal">
-                <Label Width="70">
-                    KI:
+                <Label HorizontalContentAlignment="Center" Width="200">
+                    Schwierigkeitsgrad:
                 </Label>
-                <TextBox MinWidth="130" IsReadOnly="True" x:Name="tBoxKI"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <Label Width="70">
-                    Punkte KI:
-                </Label>
-                <TextBox MinWidth="130" IsReadOnly="True" x:Name="tBoxPunkteKI"/>
+            <StackPanel>
+                <TextBox Width="200" HorizontalContentAlignment="Center" IsReadOnly="True" x:Name="tBoxSchwierigkeit"/>
             </StackPanel>
         </StackPanel>
 
-        <Button Grid.Column="1" Click="Button_Click">Button 0</Button>
-        <Button Grid.Column="2" Click="Button_Click_1">Button 1</Button>
-        <Button Grid.Column="3" Click="Button_Click_2">Button 2</Button>
-        <Button Grid.Column="4" Click="Button_Click_3">Button 3</Button>
-        <Button Grid.Column="1" Grid.Row="1" Click="Button_Click_4">Button 4</Button>
-        <Button Grid.Column="2" Grid.Row="1" Click="Button_Click_5">Button 5</Button>
-        <Button Grid.Column="3" Grid.Row="1" Click="Button_Click_6">Button 6</Button>
-        <Button Grid.Column="4" Grid.Row="1" Click="Button_Click_7">Button 7</Button>
-        <Button Grid.Column="1" Grid.Row="2" Click="Button_Click_8">Button 8</Button>
-        <Button Grid.Column="2" Grid.Row="2" Click="Button_Click_9">Button 9</Button>
-        <Button Grid.Column="3" Grid.Row="2" Click="Button_Click_10">Button 10</Button>
-        <Button Grid.Column="4" Grid.Row="2" Click="Button_Click_11">Button 11</Button>
-        <Button Grid.Column="1" Grid.Row="3" Click="Button_Click_12">Button 12</Button>
-        <Button Grid.Column="2" Grid.Row="3" Click="Button_Click_13">Button 13</Button>
-        <Button Grid.Column="3" Grid.Row="3" Click="Button_Click_14">Button 14</Button>
-        <Button Grid.Column="4" Grid.Row="3" Click="Button_Click_15">Button 15</Button>
+        <Button Grid.Column="1" Click="Button_Click" x:Name="Button">
+            <TextBox x:Name="tBox_Button" 
+                     MinWidth="50" 
+                     Visibility="Hidden" 
+                     HorizontalContentAlignment="Center"
+                     IsReadOnly="True">
+                    Moin
+            </TextBox>
+        </Button>
+        <Button Grid.Column="2" Click="Button_Click_1" x:Name="Button2">Button 1</Button>
+        <Button Grid.Column="3" Click="Button_Click_2" x:Name="Button3">Button 2</Button>
+        <Button Grid.Column="4" Click="Button_Click_3" x:Name="Button4">Button 3</Button>
+        <Button Grid.Column="1" Grid.Row="1" Click="Button_Click_4" x:Name="Button5">Button 4</Button>
+        <Button Grid.Column="2" Grid.Row="1" Click="Button_Click_5" x:Name="Button6">Button 5</Button>
+        <Button Grid.Column="3" Grid.Row="1" Click="Button_Click_6" x:Name="Button7">Button 6</Button>
+        <Button Grid.Column="4" Grid.Row="1" Click="Button_Click_7" x:Name="Button8">Button 7</Button>
+        <Button Grid.Column="1" Grid.Row="2" Click="Button_Click_8" x:Name="Button9">Button 8</Button>
+        <Button Grid.Column="2" Grid.Row="2" Click="Button_Click_9" x:Name="Button10">Button 9</Button>
+        <Button Grid.Column="3" Grid.Row="2" Click="Button_Click_10" x:Name="Button11">Button 10</Button>
+        <Button Grid.Column="4" Grid.Row="2" Click="Button_Click_11" x:Name="Button12">Button 11</Button>
+        <Button Grid.Column="1" Grid.Row="3" Click="Button_Click_12" x:Name="Button13">Button 12</Button>
+        <Button Grid.Column="2" Grid.Row="3" Click="Button_Click_13" x:Name="Button14">Button 13</Button>
+        <Button Grid.Column="3" Grid.Row="3" Click="Button_Click_14" x:Name="Button15">Button 14</Button>
+        <Button Grid.Column="4" Grid.Row="3" Click="Button_Click_15" x:Name="Button16">Button 15</Button>
     </Grid>
 </Window>
