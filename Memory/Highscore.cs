@@ -11,20 +11,65 @@ using System.IO;
  */
 namespace Memory
 {
-    static class Highscore
+    public class Highscore
     {
-        public static void WriteToFile(Spieler spieler)
+        static string[,] _highscoreData;
+        static int[] score;
+        static string[] name;
+
+        public static string[,] HighscoreData
+        {
+            get => _highscoreData;
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("Der Highscore darf nicht leer sein!");
+                }
+
+
+                _highscoreData = value;
+            }
+        }
+
+        public static int[] Score { get => score; set => score = value; }
+        public static string[] Name { get => name; set => name = value; }
+
+        public Highscore()
+        {
+            HighscoreData = ;
+        }
+        public static void WriteToFile(Computer computer, Mensch mensch)
         {
             string pfad = @"..\highscoreNormal.txt";
-            using (FileStream fs = new FileStream(pfad, FileMode.OpenOrCreate))
+            if (!File.Exists(pfad))  //Wenn Datei nicht existiert
             {
-                StreamWriter sw = new StreamWriter(fs);
+                //Öffnen oder Erstellen der Datei
+                using (FileStream fs = new FileStream(pfad, FileMode.OpenOrCreate))
+                {
+                    StreamWriter sw = new StreamWriter(fs);
 
-                sw.WriteLine(String.Format("{0,20}\t,{1,20}\n\n,{3,20}\t,{4,20}\n",
-                "Name", "Punkte", spieler.GetName(), spieler.Score));
-
-                sw.Flush(); //Schreiben erzwingen
+                    
+                        sw.Write(String.Format("{0,20},{1,20}", mensch.Name, mensch.Score));
+                    
+                    sw.Flush(); //Schreiben erzwingen
+                }
             }
+            else
+            {
+                //anhängen an Dateiende
+                using (FileStream fs = new FileStream(pfad, FileMode.Append))
+                {
+                    StreamWriter sw = new StreamWriter(fs);
+
+                        sw.Write(String.Format("{0,20},{1,20}", mensch.Name, mensch.Score));
+                        
+                    
+                    sw.Flush(); //Schreiben erzwingen
+                }
+            }
+            
+            
         }
 
         public static void ReadFromFile()
@@ -48,10 +93,52 @@ namespace Memory
 
                     }
 
-                }//foreach
-            }//while
-        }//if
-    }//using
+                }
+            }
+        }
+
+        public static int[] Sort(Spieler spieler, Mensch mensch)
+        {
+            
+            for (int i = Score.Length+1; i < Score.Length+2;i++ )
+            {
+                Score[i] = mensch.Score;
+                Name[i] = spieler.GetName();
+            }
+
+            bool vertauscht;
+            do
+            {
+                vertauscht = false;
+                for (int i = 0; i < Score.Length - 2; i++)
+                {
+                    if (Score[i] > Score[i + 1])
+                    {
+                        int puffer = Score[i];
+                        string puffername = Name[i];
+                        Score[i] = Score[i + 1];
+                        Name[i] = Name[i + 1];
+                        Score[i + 1] = puffer;
+                        Name[i + 1] = puffername;
+
+                        vertauscht = true;
+                    }
+                }
+            } while (vertauscht);
+
+
+    
+            int[] SortedHighscore = new int[Score.Length + Name.Length];
+            Array.Copy(Score, SortedHighscore, Score.Length);
+            Array.Copy(Name, 0, SortedHighscore, Score.Length, Name.Length);
+            
+           
+            
+
+            return SortedHighscore;
+            
+        }
+    }
 
 
 
