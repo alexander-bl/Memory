@@ -11,34 +11,9 @@ using System.IO;
  */
 namespace Memory
 {
-    public class Highscore
+    public static class Highscore
     {
-        static string[,] _highscoreData;
-        static int[] score;
-        static string[] name;
 
-        public static string[,] HighscoreData
-        {
-            get => _highscoreData;
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("Der Highscore darf nicht leer sein!");
-                }
-
-
-                _highscoreData = value;
-            }
-        }
-
-        public static int[] Score { get => score; set => score = value; }
-        public static string[] Name { get => name; set => name = value; }
-
-        public Highscore()
-        {
-            HighscoreData = ;
-        }
         public static void WriteToFile(Computer computer, Mensch mensch)
         {
             string pfad = @"..\highscoreNormal.txt";
@@ -49,9 +24,9 @@ namespace Memory
                 {
                     StreamWriter sw = new StreamWriter(fs);
 
-                    
-                        sw.Write(String.Format("{0,20},{1,20}", mensch.Name, mensch.Score));
-                    
+
+                    sw.Write(String.Format("{0,20},{1,20};", mensch.Name, mensch.Score));
+
                     sw.Flush(); //Schreiben erzwingen
                 }
             }
@@ -62,18 +37,20 @@ namespace Memory
                 {
                     StreamWriter sw = new StreamWriter(fs);
 
-                        sw.Write(String.Format("{0,20},{1,20}", mensch.Name, mensch.Score));
-                        
-                    
+                    sw.Write(String.Format("{0,20},{1,20};", mensch.Name, mensch.Score));
+
+
                     sw.Flush(); //Schreiben erzwingen
                 }
             }
-            
-            
+
+
         }
 
-        public static void ReadFromFile()
+        public static void ReadFromFile(Computer computer, Mensch mensch)
         {
+            int[] Score = null;
+            int score;
             bool ok = true;
             FileStream fs = null;
             StreamReader sr = null;
@@ -83,27 +60,40 @@ namespace Memory
                 if (fs.CanRead)
                 {
 
+
+
                     string line = "";
 
                     sr = new StreamReader(fs);
 
                     while (!sr.EndOfStream)
                     {
-                        line = sr.ReadLine(); //Lesen aller Datensätze in eine Zeichenkette!
+                        for (int i = 0; i < Score.Length; i++)
+                        {
+                            string[] data = null;
 
+                            line = sr.ReadLine(); //Lesen aller Datensätze in eine Zeichenkette!
+                            //data[i] = line.Split(';');
+                        }
+                    }
+
+                    for (int i = 0; i < line.Length; i++)
+                    {
+                        int.TryParse(line, out score);
+                        Score[i] = score;
                     }
 
                 }
             }
         }
 
-        public static int[] Sort(Spieler spieler, Mensch mensch)
+        public static int[] Sort(Computer computer, Mensch mensch)
         {
-            
-            for (int i = Score.Length+1; i < Score.Length+2;i++ )
+
+            for (int i = Score.Length + 1; i < Score.Length + 2; i++)
             {
                 Score[i] = mensch.Score;
-                Name[i] = spieler.GetName();
+                Name[i] = mensch.Name;
             }
 
             bool vertauscht;
@@ -127,23 +117,54 @@ namespace Memory
             } while (vertauscht);
 
 
-    
+
             int[] SortedHighscore = new int[Score.Length + Name.Length];
             Array.Copy(Score, SortedHighscore, Score.Length);
             Array.Copy(Name, 0, SortedHighscore, Score.Length, Name.Length);
-            
-           
-            
+
+
+
+
 
             return SortedHighscore;
-            
+
+
+
         }
+
+        public static void Highscores(Mensch mensch, Computer computer)
+        {
+            Highscore[] highscores = null;
+            for (int i = 0; i < highscores.Length; i++)
+            {
+                Array.Resize(ref highscores, highscores.Length + 1);
+                highscores[i] = new Highscore(mensch.Name, mensch.Score);
+
+            }
+            highscores[highscores.Length] = mensch.Name + mensch.Score;
+        }
+
+        private void bubbleSort(ref Mensch[] pListe)
+        {
+            for (int i = pListe.Length - 1; i > 0; i--)
+            {
+                for (int k = 0; k < i; k++)
+                {
+                    if (pListe[k].Score < pListe[k + 1].Score) //vertausche
+                    {
+                        Mensch speicher = new(pListe[k]);
+                        pListe[k] = pListe[k + 1];
+                        pListe[k + 1] = speicher;
+                    }
+                }
+            }
+        }*/
     }
 
 
 
 
 
-}
-    
 
+
+}
