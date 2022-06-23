@@ -9,9 +9,9 @@ using System.Windows.Controls;
  */
 namespace Memory {
     abstract public class Spieler {
-        List<KnownCard> _geseheneKarten;
-        Tuple<KnownCard, KnownCard> _offeneKarten;
-        bool _aktiveRunde;
+        List<KnownCard> _geseheneKarten;//Liste aller bereits gesehenen Karten
+        Tuple<KnownCard?, KnownCard?> _offeneKarten;//Aktuell aufgedeckten Karten
+        bool _aktiveRunde;//Ist Spieler aktuell an der Reihe?
 
         /// <summary>
         /// Konstruktor
@@ -31,7 +31,7 @@ namespace Memory {
             }
         }
 
-        public Tuple<KnownCard, KnownCard> OffeneKarten {
+        public Tuple<KnownCard?, KnownCard?> OffeneKarten {
             get => _offeneKarten;
             set {
                 _offeneKarten = value;
@@ -46,9 +46,8 @@ namespace Memory {
         /// <param name="karte"></param>
         /// <param name="zeile"></param>
         /// <param name="spalte"></param>
-        public virtual void Gedaechtnis(string karte, int zeile, int spalte) {
-            KnownCard neueKarte = new KnownCard(karte, zeile, spalte);
-            GeseheneKarten.Add(neueKarte);//Speicher neue Karte ins Gedächniss 
+        public virtual void Gedaechtnis(KnownCard card) {
+            GeseheneKarten.Add(card);//Speicher neue Karte ins Gedächniss 
         }
 
         /// <summary>
@@ -59,10 +58,10 @@ namespace Memory {
         public abstract Button Random(List<Button> buttons);
 
         /// <summary>
-        /// Karte Anschauen
+        /// Handled die Offenen Karten und Zeit des aktuell Spielenden Spielers
         /// </summary>
-        /// <param name="stopwatch"></param>
-        /// <param name="buttons"></param>
-        public abstract void Karteanschauen(ref Stopwatch stopwatch, Button[] buttons);
+        /// <param name="card"></param>
+        /// <returns>Ist Zweite Karte aufgedeckt?</returns>
+        public abstract bool OffeneKartenHandler(KnownCard card);
     }
 }

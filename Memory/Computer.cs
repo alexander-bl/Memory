@@ -14,9 +14,9 @@ using System.Threading.Tasks;
 
 namespace Memory {
     public class Computer : Spieler {
-        string _difficulty;
-        int _anzahlAufgedecktePaare;
-        int _anzahlRichtigerPaare;
+        string _difficulty;//Schwierigkeitsgrad des Computers
+        int _anzahlAufgedecktePaare;//Anzahl aller Aufgedeckten Karten paare
+        int _anzahlRichtigerPaare;//Anzahl aller richtig aufgedeckten Karten paare
 
         public string Difficulty {
             get => _difficulty;
@@ -70,9 +70,10 @@ namespace Memory {
         /// <param name="karte"></param>
         /// <param name="zeile"></param>
         /// <param name="spalte"></param>
-        public override void Gedaechtnis(string karte, int zeile, int spalte) {
-            base.Gedaechtnis(karte, zeile, spalte);
+        public override void Gedaechtnis(KnownCard card) {
+            base.Gedaechtnis(card);//Speicher Karte ins Gedächniss
             int maxGedaechnisGroesse;
+            //Überprüfen der maxGröße vom Gedächniss
             switch (Difficulty) {
                 case "Normal":
                     maxGedaechnisGroesse = 5;
@@ -86,6 +87,7 @@ namespace Memory {
                     maxGedaechnisGroesse = 5;
                     break;
             }
+            //Wenn Gedächniss größer als maxGedächnis Größe dann ist, lösche älteste Elememte
             while (GeseheneKarten.Count > maxGedaechnisGroesse) {
                 GeseheneKarten.RemoveAt(0);
                 GeseheneKarten.TrimExcess();
@@ -108,11 +110,26 @@ namespace Memory {
         }
 
         /// <summary>
-        /// Anschauen einer Karte
+        /// Handled die Offenen Karten des aktuell Spielenden Computers
         /// </summary>
-        /// <param name="stopwatch"></param>
+        /// <param name="card"></param>
+        /// <returns>Ist Zweite Karte aufgedeckt?</returns>
+        public override bool OffeneKartenHandler(KnownCard card) {
+            //Test ob Aufgedeckte Karte erste oder zweite Karte ist
+            if (OffeneKarten.Item1 == null) {
+                OffeneKarten = new Tuple<KnownCard?, KnownCard?>(card, null);
+                return false;//false weil aufgedeckte Karte die erste Karte der Runde ist
+            } else {
+                OffeneKarten = new Tuple<KnownCard?, KnownCard?>(OffeneKarten.Item1, card);
+                return true;//true weil aufgedeckte Karte die zweite Karte der Runde ist
+            }
+        }
+
+        /// <summary>
+        /// Auswahl welche Karte angeschaut wird
+        /// </summary>
         /// <param name="buttons"></param>
-        public override void Karteanschauen(ref Stopwatch stopwatch, Button[] buttons) {
+        public void Karteanschauen(ref Button[] buttons) {
             GeseheneKarten.Sort((s1, s2) => s1.Karte.CompareTo(s2.Karte));//Sortiere Karten Liste
 
             for (int i = 0; i < GeseheneKarten.Count; i++) {

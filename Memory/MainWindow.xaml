@@ -58,29 +58,118 @@
             </StackPanel>
         </StackPanel>
 
+        
         <Button Grid.Column="1" Click="Button_Click" x:Name="Button">
             <TextBox x:Name="tBox_Button" 
                      MinWidth="50" 
                      Visibility="Hidden" 
                      HorizontalContentAlignment="Center"
-                     IsReadOnly="True">
-                    Moin
-            </TextBox>
+                     IsReadOnly="True"/>
         </Button>
-        <Button Grid.Column="2" Click="Button_Click_1" x:Name="Button2">Button 1</Button>
-        <Button Grid.Column="3" Click="Button_Click_2" x:Name="Button3">Button 2</Button>
-        <Button Grid.Column="4" Click="Button_Click_3" x:Name="Button4">Button 3</Button>
-        <Button Grid.Column="1" Grid.Row="1" Click="Button_Click_4" x:Name="Button5">Button 4</Button>
-        <Button Grid.Column="2" Grid.Row="1" Click="Button_Click_5" x:Name="Button6">Button 5</Button>
-        <Button Grid.Column="3" Grid.Row="1" Click="Button_Click_6" x:Name="Button7">Button 6</Button>
-        <Button Grid.Column="4" Grid.Row="1" Click="Button_Click_7" x:Name="Button8">Button 7</Button>
-        <Button Grid.Column="1" Grid.Row="2" Click="Button_Click_8" x:Name="Button9">Button 8</Button>
-        <Button Grid.Column="2" Grid.Row="2" Click="Button_Click_9" x:Name="Button10">Button 9</Button>
-        <Button Grid.Column="3" Grid.Row="2" Click="Button_Click_10" x:Name="Button11">Button 10</Button>
-        <Button Grid.Column="4" Grid.Row="2" Click="Button_Click_11" x:Name="Button12">Button 11</Button>
-        <Button Grid.Column="1" Grid.Row="3" Click="Button_Click_12" x:Name="Button13">Button 12</Button>
-        <Button Grid.Column="2" Grid.Row="3" Click="Button_Click_13" x:Name="Button14">Button 13</Button>
-        <Button Grid.Column="3" Grid.Row="3" Click="Button_Click_14" x:Name="Button15">Button 14</Button>
-        <Button Grid.Column="4" Grid.Row="3" Click="Button_Click_15" x:Name="Button16">Button 15</Button>
+        <Button Grid.Column="2" Click="Button_Click_2" x:Name="Button2">
+            <TextBox x:Name="tBox_Button2" 
+                     MinWidth="50" 
+                     Visibility="Hidden" 
+                     HorizontalContentAlignment="Center"
+                     IsReadOnly="True"/>
+        </Button>
+        <Button Grid.Column="3" Click="Button_Click_3" x:Name="Button3">
+            <TextBox x:Name="tBox_Button3" 
+                     MinWidth="50" 
+                     Visibility="Hidden" 
+                     HorizontalContentAlignment="Center"
+                     IsReadOnly="True"/>
+        </Button>
+        <Button Grid.Column="4" Click="Button_Click_4" x:Name="Button4">
+            <TextBox x:Name="tBox_Button4" 
+                     MinWidth="50" 
+                     Visibility="Hidden" 
+                     HorizontalContentAlignment="Center"
+                     IsReadOnly="True"/>
+        </Button>
+        <Button Grid.Column="1" Grid.Row="1" Click="Button_Click_5" x:Name="Button5">
+            <TextBox x:Name="tBox_Button5" 
+                     MinWidth="50" 
+                     Visibility="Hidden" 
+                     HorizontalContentAlignment="Center"
+                     IsReadOnly="True"/>
+        </Button>
+        <Button Grid.Column="2" Grid.Row="1" Click="Button_Click_6" x:Name="Button6">
+            <TextBox x:Name="tBox_Button6" 
+                     MinWidth="50" 
+                     Visibility="Hidden" 
+                     HorizontalContentAlignment="Center"
+                     IsReadOnly="True"/>
+        </Button>
+        <Button Grid.Column="3" Grid.Row="1" Click="Button_Click_7" x:Name="Button7">
+            <TextBox x:Name="tBox_Button7" 
+                     MinWidth="50" 
+                     Visibility="Hidden" 
+                     HorizontalContentAlignment="Center"
+                     IsReadOnly="True"/>
+        </Button>
+        <Button Grid.Column="4" Grid.Row="1" Click="Button_Click_8" x:Name="Button8">
+            <TextBox x:Name="tBox_Button8" 
+                     MinWidth="50" 
+                     Visibility="Hidden" 
+                     HorizontalContentAlignment="Center"
+                     IsReadOnly="True"/>
+        </Button>
+        <Button Grid.Column="1" Grid.Row="2" Click="Button_Click_9" x:Name="Button9">
+            <TextBox x:Name="tBox_Button9" 
+                     MinWidth="50" 
+                     Visibility="Hidden" 
+                     HorizontalContentAlignment="Center"
+                     IsReadOnly="True"/>
+        </Button>
+        <Button Grid.Column="2" Grid.Row="2" Click="Button_Click_10" x:Name="Button10">
+            <TextBox x:Name="tBox_Button10" 
+                     MinWidth="50" 
+                     Visibility="Hidden" 
+                     HorizontalContentAlignment="Center"
+                     IsReadOnly="True"/>
+        </Button>
+        <Button Grid.Column="3" Grid.Row="2" Click="Button_Click_11" x:Name="Button11">
+            <TextBox x:Name="tBox_Button11" 
+                     MinWidth="50" 
+                     Visibility="Hidden" 
+                     HorizontalContentAlignment="Center"
+                     IsReadOnly="True"/>
+        </Button>
+        <Button Grid.Column="4" Grid.Row="2" Click="Button_Click_12" x:Name="Button12">
+            <TextBox x:Name="tBox_Button12" 
+                     MinWidth="50" 
+                     Visibility="Hidden" 
+                     HorizontalContentAlignment="Center"
+                     IsReadOnly="True"/>
+        </Button>
+        <Button Grid.Column="1" Grid.Row="3" Click="Button_Click_13" x:Name="Button13">
+            <TextBox x:Name="tBox_Button13" 
+                     MinWidth="50" 
+                     Visibility="Hidden" 
+                     HorizontalContentAlignment="Center"
+                     IsReadOnly="True"/>
+        </Button>
+        <Button Grid.Column="2" Grid.Row="3" Click="Button_Click_14" x:Name="Button14">
+            <TextBox x:Name="tBox_Button14" 
+                     MinWidth="50" 
+                     Visibility="Hidden" 
+                     HorizontalContentAlignment="Center"
+                     IsReadOnly="True"/>
+        </Button>
+        <Button Grid.Column="3" Grid.Row="3" Click="Button_Click_15" x:Name="Button15">
+            <TextBox x:Name="tBox_Button15" 
+                     MinWidth="50" 
+                     Visibility="Hidden" 
+                     HorizontalContentAlignment="Center"
+                     IsReadOnly="True"/>
+        </Button>
+        <Button Grid.Column="4" Grid.Row="3" Click="Button_Click_16" x:Name="Button16">
+            <TextBox x:Name="tBox_Button16" 
+                     MinWidth="50" 
+                     Visibility="Hidden" 
+                     HorizontalContentAlignment="Center"
+                     IsReadOnly="True"/>
+        </Button>
     </Grid>
 </Window>

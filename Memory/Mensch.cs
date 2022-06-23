@@ -9,17 +9,19 @@ using System.Collections.Generic;
  */
 namespace Memory {
     public class Mensch : Spieler {
-        string _name;
-        int _score;
+        string _name;//Name des Menschen
+        int _score;//Punktzahl des Menschen
+        Stopwatch _stopwatch;//Stopuhr zur Zeitmessung
 
         /// <summary>
         /// Konstruktor
         /// </summary>
         /// <param name="name"></param>
         /// <param name="aktiveRunde"></param>
-        public Mensch(string name, bool aktiveRunde) : base(aktiveRunde) {
+        public Mensch(string name, bool aktiveRunde, Stopwatch stopwatch) : base(aktiveRunde) {
             Name = name;
             Score = 0;
+            Stopwatch = stopwatch;
         }
 
         public string Name {
@@ -43,14 +45,22 @@ namespace Memory {
             }
         }
 
+        public Stopwatch Stopwatch {
+            get => _stopwatch;
+            set {
+                _stopwatch = value ?? throw new ArgumentNullException(
+                                        "Keine Stopuhr vorhanden!");
+            }
+        }
+
         /// <summary>
         /// Speichern("Merken") aller aufgedeckten Karten
         /// </summary>
         /// <param name="karte"></param>
         /// <param name="zeile"></param>
         /// <param name="spalte"></param>
-        public override void Gedaechtnis(string karte, int zeile, int spalte) {
-            base.Gedaechtnis(karte, zeile, spalte);
+        public override void Gedaechtnis(KnownCard card) {
+            base.Gedaechtnis(card);
         }
 
         /// <summary>
@@ -69,12 +79,21 @@ namespace Memory {
         }
 
         /// <summary>
-        /// Anschauen einer Karte mit Zeitmessung
+        /// Handled die Offenen Karten und Zeit des aktuell Spielenden Menschen
         /// </summary>
-        /// <param name="stopwatch"></param>
-        /// <param name="buttons"></param>
-        public override void Karteanschauen(ref Stopwatch stopwatch, Button[] buttons) {
-            stopwatch.Start();
+        /// <param name="card"></param>
+        /// <returns>Ist Zweite Karte aufgedeckt?</returns>
+        public override bool OffeneKartenHandler(KnownCard card) {
+            //Test ob Aufgedeckte Karte erste oder zweite Karte ist
+            if (OffeneKarten?.Item1 == null) {
+                Stopwatch.Start();
+                OffeneKarten = new Tuple<KnownCard?, KnownCard?>(card, null);
+                return false;//false weil aufgedeckte Karte die erste Karte der Runde ist
+            } else {
+                Stopwatch.Stop();
+                 OffeneKarten = new Tuple<KnownCard?, KnownCard?>(OffeneKarten.Item1, card);
+                return true;//true weil aufgedeckte Karte die zweite Karte der Runde ist
+            }
         }
     }
 }

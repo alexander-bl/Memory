@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-/*
+﻿/*
  * Member Objekt von Spieler
  * Autoren: Alexander Bletsch, Anna Stork
  * Erstellt: 09.06.22
  */
 
 namespace Memory {
+    /// <summary>
+    /// Struktur zum Speichern von Karten
+    /// </summary>
     public struct KnownCard {
 
         /// <summary>
@@ -30,7 +28,7 @@ namespace Memory {
 
         public int Spalte { get; set; }
 
-        
+
 
     }
 }
