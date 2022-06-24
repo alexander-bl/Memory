@@ -563,7 +563,6 @@ namespace Memory {
                 _spielFeld = neuesSpielFenster.SpielFeld;
                 _mensch = neuesSpielFenster.Mensch;
                 _computer = neuesSpielFenster.Computer;
-                MessageBox.Show(_mensch.Name, _computer.Difficulty);
             } else {
                 return;
             }
