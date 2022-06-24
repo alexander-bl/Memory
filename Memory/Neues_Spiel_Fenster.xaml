@@ -1,0 +1,38 @@
+﻿<Window x:Class="Memory.Neues_Spiel_Fenster"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Memory"
+        mc:Ignorable="d"
+        Title="Neues Spiel erstellen" Height="150" Width="300"
+        WindowStartupLocation="CenterScreen">
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+        <StackPanel Orientation="Horizontal">
+            <Label Width="120">
+                Spieler Name:
+            </Label>
+            <TextBox Width="150" x:Name="tBox_Name" TextChanged="tBox_Name_TextChanged"/>
+            
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Label Width="120">
+                Schwierigkeitsgrad:
+            </Label>
+            <RadioButton VerticalContentAlignment="Center" IsChecked="True" Checked="RadioButton_Checked_Normal" Margin="2,2,2,2">
+                Normal
+            </RadioButton>
+            <RadioButton VerticalContentAlignment="Center" Checked="RadioButton_Checked_Schwer" Margin="2,2,2,2">
+                Schwer
+            </RadioButton>
+        </StackPanel>
+
+        <DockPanel>
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Name="okButton" Click="okButton_Click" IsDefault="True" Margin="2,2,2,2">OK</Button>
+                <Button Name="cancelButton" IsCancel="True" Click="cancelButton_Click" Margin="2,2,2,2">Cancel</Button>
+            </StackPanel>
+        </DockPanel>
+    </StackPanel>
+     
+</Window>

@@ -10,8 +10,9 @@ using System.Windows.Controls;
 namespace Memory {
     abstract public class Spieler {
         List<KnownCard> _geseheneKarten;//Liste aller bereits gesehenen Karten
-        Tuple<KnownCard?, KnownCard?> _offeneKarten;//Aktuell aufgedeckten Karten
+        Tuple<KnownCard, KnownCard> _offeneKarten;//Aktuell aufgedeckten Karten
         bool _aktiveRunde;//Ist Spieler aktuell an der Reihe?
+        int _anzahlGefundenerPaare;//Anzahl aller Gefundenen Karten paare
 
         /// <summary>
         /// Konstruktor
@@ -19,8 +20,11 @@ namespace Memory {
         /// <param name="aktiveRunde"></param>
         protected Spieler(bool aktiveRunde) {
             GeseheneKarten = new List<KnownCard>();
-            OffeneKarten = null;
+            OffeneKarten = new Tuple<KnownCard, KnownCard>(
+                new KnownCard("", 0, 0), new KnownCard("", 0, 0));
+
             AktiveRunde = aktiveRunde;
+            AnzahlGefundenerPaare = 0;
         }
 
         public List<KnownCard> GeseheneKarten {
@@ -31,14 +35,25 @@ namespace Memory {
             }
         }
 
-        public Tuple<KnownCard?, KnownCard?> OffeneKarten {
+        public Tuple<KnownCard, KnownCard> OffeneKarten {
             get => _offeneKarten;
             set {
-                _offeneKarten = value;
+                _offeneKarten = value ?? throw new ArgumentNullException(
+                                   "keine Offenen Karten angegeben!");
             }
         }
 
         public bool AktiveRunde { get => _aktiveRunde; set => _aktiveRunde = value; }
+        public int AnzahlGefundenerPaare {
+            get => _anzahlGefundenerPaare;
+            set {
+                if (value <= 0 || value > 8) {
+                    throw new ArgumentOutOfRangeException(
+                        "Anzahl der Gefundenen Paare ist größer als 8 oder kleiner als 0!");
+                }
+                _anzahlGefundenerPaare = value;
+            }
+        }
 
         /// <summary>
         /// Speichern der gesehenen Karten
