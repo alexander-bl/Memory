@@ -116,11 +116,12 @@ namespace Memory {
         /// <returns>Ist Zweite Karte aufgedeckt?</returns>
         public override bool OffeneKartenHandler(KnownCard card) {
             //Test ob Aufgedeckte Karte erste oder zweite Karte ist
-            if (OffeneKarten.Item1 == null) {
-                OffeneKarten = new Tuple<KnownCard?, KnownCard?>(card, null);
+            if (OffeneKarten.Item1.Karte == "") {
+                KnownCard emptyCard = new KnownCard("", 0, 0);
+                OffeneKarten = new Tuple<KnownCard, KnownCard>(card, emptyCard);
                 return false;//false weil aufgedeckte Karte die erste Karte der Runde ist
             } else {
-                OffeneKarten = new Tuple<KnownCard?, KnownCard?>(OffeneKarten.Item1, card);
+                OffeneKarten = new Tuple<KnownCard, KnownCard>(OffeneKarten.Item1, card);
                 return true;//true weil aufgedeckte Karte die zweite Karte der Runde ist
             }
         }
@@ -135,172 +136,95 @@ namespace Memory {
             for (int i = 0; i < GeseheneKarten.Count; i++) {
                 //Alle Karten im Gedächniss durchschauen
                 if (GeseheneKarten[i].Karte == GeseheneKarten[i + 1].Karte) {
-                    //Wenn gleiche Karte gefunden dann klicke auf Karte 
-                    switch (GeseheneKarten[i].Zeile) {
-                        case 1:
-                            switch (GeseheneKarten[i].Spalte) {
-                                case 1:
-                                    buttons[0].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 2:
-                                    buttons[1].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 3:
-                                    buttons[2].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 4:
-                                    buttons[3].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
+                    KnownCard[] kartenpaar = new KnownCard[] { GeseheneKarten[i], GeseheneKarten[i+1] };
 
-                        case 2:
-                            switch (GeseheneKarten[i].Spalte) {
-                                case 1:
-                                    buttons[4].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 2:
-                                    buttons[5].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 3:
-                                    buttons[6].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 4:
-                                    buttons[7].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
+                    foreach (var card in kartenpaar) {
+                        //Wenn gleiche Karte gefunden dann klicke auf Karte 
+                        switch (card.Zeile) {
+                            case 1:
+                                switch (GeseheneKarten[i].Spalte) {
+                                    case 1:
+                                        buttons[0].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                                        break;
+                                    case 2:
+                                        buttons[1].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                                        break;
+                                    case 3:
+                                        buttons[2].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                                        break;
+                                    case 4:
+                                        buttons[3].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                break;
 
-                        case 3:
-                            switch (GeseheneKarten[i].Spalte) {
-                                case 1:
-                                    buttons[8].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 2:
-                                    buttons[9].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 3:
-                                    buttons[10].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 4:
-                                    buttons[11].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
+                            case 2:
+                                switch (card.Spalte) {
+                                    case 1:
+                                        buttons[4].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                                        break;
+                                    case 2:
+                                        buttons[5].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                                        break;
+                                    case 3:
+                                        buttons[6].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                                        break;
+                                    case 4:
+                                        buttons[7].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                break;
 
-                        case 4:
-                            switch (GeseheneKarten[i].Spalte) {
-                                case 1:
-                                    buttons[12].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 2:
-                                    buttons[13].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 3:
-                                    buttons[14].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 4:
-                                    buttons[15].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
+                            case 3:
+                                switch (card.Spalte) {
+                                    case 1:
+                                        buttons[8].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                                        break;
+                                    case 2:
+                                        buttons[9].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                                        break;
+                                    case 3:
+                                        buttons[10].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                                        break;
+                                    case 4:
+                                        buttons[11].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                break;
+
+                            case 4:
+                                switch (card.Spalte) {
+                                    case 1:
+                                        buttons[12].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                                        break;
+                                    case 2:
+                                        buttons[13].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                                        break;
+                                    case 3:
+                                        buttons[14].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                                        break;
+                                    case 4:
+                                        buttons[15].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                break;
+                        }
                     }
-
-
-                    switch (GeseheneKarten[i + 1].Zeile) {
-                        case 1:
-                            switch (GeseheneKarten[i + 1].Spalte) {
-                                case 1:
-                                    buttons[0].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 2:
-                                    buttons[1].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 3:
-                                    buttons[2].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 4:
-                                    buttons[3].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-
-                        case 2:
-                            switch (GeseheneKarten[i + 1].Spalte) {
-                                case 1:
-                                    buttons[4].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 2:
-                                    buttons[5].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 3:
-                                    buttons[6].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 4:
-                                    buttons[7].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-
-                        case 3:
-                            switch (GeseheneKarten[i + 1].Spalte) {
-                                case 1:
-                                    buttons[8].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 2:
-                                    buttons[9].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 3:
-                                    buttons[10].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 4:
-                                    buttons[11].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-
-                        case 4:
-                            switch (GeseheneKarten[i + 1].Spalte) {
-                                case 1:
-                                    buttons[12].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 2:
-                                    buttons[13].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 3:
-                                    buttons[14].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                case 4:
-                                    buttons[15].RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                    }
-                    return;
-                }
-                
+                    return;//Breche Kartenanschauen ab, da ein kartenpaar gedrückt wurde
+                } 
             }
+
                 List<Button> buttonslist = new List<Button>(buttons);
                 Button button = Random(buttonslist);
                 button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));//Klicke auf Zufällige Karte
-
-                Thread.Sleep(2000);
 
                 for (int i = 0; i < GeseheneKarten.Count; i++) {
                     if (GeseheneKarten[i].Karte == (string)button.Content) {
@@ -383,8 +307,8 @@ namespace Memory {
                                 break;
                         }
                         Task.WaitAll(new Task[] { Task.Delay(2000) });
-                        return;
-                    }
+                        return;//Breche Kartenanschauen ab, da ein kartenpaar gedrückt wurde
+                }
                 }
             button = Random(buttonslist);
             button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));//Klicke 2te Zufällige Karte
