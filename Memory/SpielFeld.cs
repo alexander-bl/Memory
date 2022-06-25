@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Memory
 {
@@ -56,45 +60,31 @@ namespace Memory
 
             Random rnd = new Random();
             int s = 4, z = 4;
-
-            int[] anzahl = new int[8];  //Erzeugen eines Arrays zum speichern, wie oft ein Begriff vorhanden ist
-
-            bool ok = false;
+            string[,] Field = new string[8, 8];
             int zufallszahl;
+            int var = 15;
 
             for (int i = 0; i < z; i++)
             {
                 for (int n = 0; n < s; n++)
                 {
-                    do
+
+                    string[] Begriffe = Karten.Kartensatz; //ordne dem Array das Feld aus karten zu
+                    zufallszahl = rnd.Next(0, var);   //Zuweisung eines zufälligen Wertes zu zufallszahl
+                    Field[i, n] = Begriffe[zufallszahl]; //schreibe den Begriff, der an der Stelle der Zufallszahl liegt, dem Feld zu
+                    Array.Clear(Begriffe, zufallszahl, 1);  //Lösche das Element, welches an der Stelle zufallszahl liegt
+                    //Schiebe die Wete des Arrays nach links, sodass das Feld mit null am Ende steht
+                    for (int k = zufallszahl; k < Begriffe.Length - 1; k++)
                     {
-                        zufallszahl = rnd.Next(0, 8);   //Zuweisung eines zufälligen Wertes zu zufallszahl
-                        ok = false;
-
-                        // Erhöhe Anzahl an der Stelle j, wenn zahl j gegeben ist
-                        for (int j = 0; j < zufallszahl + 1; j++)
-                        {
-                            if (zufallszahl == j)
-                            {
-                                anzahl[j]++;
-                            }
-                        }
-
-                        //Wenn anzahl an der gegebene Stelle kleiner gleich 2 ist, setze ok auf true
-                        if (anzahl[zufallszahl] <= 2)
-                        {
-                            ok = true;
-                        }
-
-                    } while (!ok);//wiederhole dies, bis eine passende Zahl gefunden wurde
-
-                    string[] Begriffe = Karten.Kartensatz; //ordne dem Array das Feld aus der Methode GetKarten zu
-                    Feld[i, n] = Begriffe[zufallszahl]; //schreibe den Begriff, der an der Stelle der Zufallszahl liegt, dem Feld zu
+                        Begriffe[k] = Begriffe[k + 1];
+                    }
+                    var--;  //verkleinere die AUswahl der Zufallszahlen
 
                 }
             }
 
-            return Feld;
+
+            return Field;
 
         }
 
