@@ -358,7 +358,7 @@ namespace Memory {
                        
                     //Punkte für richtiges paar für Mensch 
                     if (_mensch.AktiveRunde) {
-                        int newscore =1/( (int)_mensch.Stopwatch.Elapsed.TotalSeconds); 
+                        int newscore = (1/( (int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000; 
                         _mensch.Score += newscore;
                         tBoxPunkte.Text = _mensch.Score.ToString();
                     } else {
@@ -430,7 +430,7 @@ namespace Memory {
 
                     //Punkte für richtiges paar für Mensch 
                     if (_mensch.AktiveRunde) {
-                        int newscore = 1 / ((int)_mensch.Stopwatch.Elapsed.TotalSeconds);
+                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
                         _mensch.Score += newscore;
                         tBoxPunkte.Text = _mensch.Score.ToString();
                     } else {
@@ -502,7 +502,7 @@ namespace Memory {
 
                     //Punkte für richtiges paar für Mensch 
                     if (_mensch.AktiveRunde) {
-                        int newscore = 1 / ((int)_mensch.Stopwatch.Elapsed.TotalSeconds);
+                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
                         _mensch.Score += newscore;
                         tBoxPunkte.Text = _mensch.Score.ToString();
                     } else {
@@ -574,7 +574,7 @@ namespace Memory {
 
                     //Punkte für richtiges paar für Mensch 
                     if (_mensch.AktiveRunde) {
-                        int newscore = 1 / ((int)_mensch.Stopwatch.Elapsed.TotalSeconds);
+                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
                         _mensch.Score += newscore;
                         tBoxPunkte.Text = _mensch.Score.ToString();
                     } else {
@@ -646,7 +646,7 @@ namespace Memory {
 
                     //Punkte für richtiges paar für Mensch 
                     if (_mensch.AktiveRunde) {
-                        int newscore = 1 / ((int)_mensch.Stopwatch.Elapsed.TotalSeconds);
+                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
                         _mensch.Score += newscore;
                         tBoxPunkte.Text = _mensch.Score.ToString();
                     } else {
@@ -718,7 +718,7 @@ namespace Memory {
 
                     //Punkte für richtiges paar für Mensch 
                     if (_mensch.AktiveRunde) {
-                        int newscore = 1 / ((int)_mensch.Stopwatch.Elapsed.TotalSeconds);
+                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
                         _mensch.Score += newscore;
                         tBoxPunkte.Text = _mensch.Score.ToString();
                     } else {
@@ -790,7 +790,7 @@ namespace Memory {
 
                     //Punkte für richtiges paar für Mensch 
                     if (_mensch.AktiveRunde) {
-                        int newscore = 1 / ((int)_mensch.Stopwatch.Elapsed.TotalSeconds);
+                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
                         _mensch.Score += newscore;
                         tBoxPunkte.Text = _mensch.Score.ToString();
                     } else {
@@ -862,7 +862,7 @@ namespace Memory {
 
                     //Punkte für richtiges paar für Mensch 
                     if (_mensch.AktiveRunde) {
-                        int newscore = 1 / ((int)_mensch.Stopwatch.Elapsed.TotalSeconds);
+                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
                         _mensch.Score += newscore;
                         tBoxPunkte.Text = _mensch.Score.ToString();
                     } else {
@@ -934,7 +934,7 @@ namespace Memory {
 
                     //Punkte für richtiges paar für Mensch 
                     if (_mensch.AktiveRunde) {
-                        int newscore = 1 / ((int)_mensch.Stopwatch.Elapsed.TotalSeconds);
+                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
                         _mensch.Score += newscore;
                         tBoxPunkte.Text = _mensch.Score.ToString();
                     } else {
@@ -1006,7 +1006,7 @@ namespace Memory {
 
                     //Punkte für richtiges paar für Mensch 
                     if (_mensch.AktiveRunde) {
-                        int newscore = 1 / ((int)_mensch.Stopwatch.Elapsed.TotalSeconds);
+                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
                         _mensch.Score += newscore;
                         tBoxPunkte.Text = _mensch.Score.ToString();
                     } else {
@@ -1078,7 +1078,7 @@ namespace Memory {
 
                     //Punkte für richtiges paar für Mensch 
                     if (_mensch.AktiveRunde) {
-                        int newscore = 1 / ((int)_mensch.Stopwatch.Elapsed.TotalSeconds);
+                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
                         _mensch.Score += newscore;
                         tBoxPunkte.Text = _mensch.Score.ToString();
                     } else {
@@ -1150,7 +1150,7 @@ namespace Memory {
 
                     //Punkte für richtiges paar für Mensch 
                     if (_mensch.AktiveRunde) {
-                        int newscore = 1 / ((int)_mensch.Stopwatch.Elapsed.TotalSeconds);
+                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
                         _mensch.Score += newscore;
                         tBoxPunkte.Text = _mensch.Score.ToString();
                     } else {
@@ -1222,7 +1222,7 @@ namespace Memory {
 
                     //Punkte für richtiges paar für Mensch 
                     if (_mensch.AktiveRunde) {
-                        int newscore = 1 / ((int)_mensch.Stopwatch.Elapsed.TotalSeconds);
+                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
                         _mensch.Score += newscore;
                         tBoxPunkte.Text = _mensch.Score.ToString();
                     } else {
@@ -1294,7 +1294,7 @@ namespace Memory {
 
                     //Punkte für richtiges paar für Mensch 
                     if (_mensch.AktiveRunde) {
-                        int newscore = 1 / ((int)_mensch.Stopwatch.Elapsed.TotalSeconds);
+                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
                         _mensch.Score += newscore;
                         tBoxPunkte.Text = _mensch.Score.ToString();
                     } else {
@@ -1366,7 +1366,7 @@ namespace Memory {
 
                     //Punkte für richtiges paar für Mensch 
                     if (_mensch.AktiveRunde) {
-                        int newscore = 1 / ((int)_mensch.Stopwatch.Elapsed.TotalSeconds);
+                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
                         _mensch.Score += newscore;
                         tBoxPunkte.Text = _mensch.Score.ToString();
                     } else {
@@ -1438,7 +1438,7 @@ namespace Memory {
 
                     //Punkte für richtiges paar für Mensch 
                     if (_mensch.AktiveRunde) {
-                        int newscore = 1 / ((int)_mensch.Stopwatch.Elapsed.TotalSeconds);
+                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
                         _mensch.Score += newscore;
                         tBoxPunkte.Text = _mensch.Score.ToString();
                     } else {
