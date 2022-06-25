@@ -47,7 +47,7 @@ namespace Memory {
         public int AnzahlGefundenerPaare {
             get => _anzahlGefundenerPaare;
             set {
-                if (value <= 0 || value > 8) {
+                if (value < 0 || value > 8) {
                     throw new ArgumentOutOfRangeException(
                         "Anzahl der Gefundenen Paare ist größer als 8 oder kleiner als 0!");
                 }
