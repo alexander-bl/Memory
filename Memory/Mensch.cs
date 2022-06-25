@@ -18,20 +18,23 @@ namespace Memory {
         /// </summary>
         /// <param name="name"></param>
         /// <param name="aktiveRunde"></param>
-        public Mensch(string name, bool aktiveRunde, Stopwatch stopwatch) : base(aktiveRunde) {
+        public Mensch(string name, bool aktiveRunde) : base(aktiveRunde) {
             Name = name;
             Score = 0;
-            Stopwatch = stopwatch;
+            Stopwatch = new Stopwatch();    
         }
 
         public string Name {
             get => _name;
             set {
+                if (value == null) {
+                    throw new ArgumentNullException(
+                                    "Kein Name Vorhanden");
+                }
                 if (value.Length < 2) {
                     throw new ArgumentOutOfRangeException("Name ist zu kurz! Mindestens 2 Zeichen lang.");
                 }
-                _name = value ?? throw new ArgumentNullException(
-                                    "Kein Name Vorhanden");
+                _name = value;
             }
         }
 
@@ -85,13 +88,14 @@ namespace Memory {
         /// <returns>Ist Zweite Karte aufgedeckt?</returns>
         public override bool OffeneKartenHandler(KnownCard card) {
             //Test ob Aufgedeckte Karte erste oder zweite Karte ist
-            if (OffeneKarten?.Item1 == null) {
+            if (OffeneKarten.Item1.Karte == "") {
+                KnownCard emptyCard = new KnownCard("", 0, 0);
                 Stopwatch.Start();
-                OffeneKarten = new Tuple<KnownCard?, KnownCard?>(card, null);
+                OffeneKarten = new Tuple<KnownCard, KnownCard>(card, emptyCard);
                 return false;//false weil aufgedeckte Karte die erste Karte der Runde ist
             } else {
                 Stopwatch.Stop();
-                 OffeneKarten = new Tuple<KnownCard?, KnownCard?>(OffeneKarten.Item1, card);
+                 OffeneKarten = new Tuple<KnownCard, KnownCard>(OffeneKarten.Item1, card);
                 return true;//true weil aufgedeckte Karte die zweite Karte der Runde ist
             }
         }
