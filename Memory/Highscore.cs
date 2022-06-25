@@ -14,151 +14,67 @@ namespace Memory
     public static class Highscore
     {
 
-        public static void WriteToFile(Computer computer, Mensch mensch)
+        public static void WriteToFile(Computer computer, Mensch mensch, ref List<Tuple<String, int, double, string>> highscores)
         {
+            ReadFromFile(computer, mensch);
+            Highscores(mensch, computer, ref highscores);
+
             string pfad = @"..\highscoreNormal.txt";
-            if (!File.Exists(pfad))  //Wenn Datei nicht existiert
+
+            //Öffnen oder Erstellen der Datei
+            using (FileStream fs = new FileStream(pfad, FileMode.OpenOrCreate))
             {
-                //Öffnen oder Erstellen der Datei
-                using (FileStream fs = new FileStream(pfad, FileMode.OpenOrCreate))
-                {
-                    StreamWriter sw = new StreamWriter(fs);
+                StreamWriter sw = new StreamWriter(fs);
 
-
-                    sw.Write(String.Format("{0,20},{1,20};", mensch.Name, mensch.Score));
-
-                    sw.Flush(); //Schreiben erzwingen
-                }
+                sw.Write(highscores);
+                sw.Flush();
             }
-            else
-            {
-                //anhängen an Dateiende
-                using (FileStream fs = new FileStream(pfad, FileMode.Append))
-                {
-                    StreamWriter sw = new StreamWriter(fs);
-
-                    sw.Write(String.Format("{0,20},{1,20};", mensch.Name, mensch.Score));
-
-
-                    sw.Flush(); //Schreiben erzwingen
-                }
-            }
-
-
+          
         }
 
         public static void ReadFromFile(Computer computer, Mensch mensch)
         {
-            int[] Score = null;
-            int score;
-            bool ok = true;
+            
             FileStream fs = null;
             StreamReader sr = null;
             string pfad = @"..\highscoreNormal.txt";
             using (fs = new FileStream(pfad, FileMode.OpenOrCreate))
             {
                 if (fs.CanRead)
-                {
-
-
-
-                    string line = "";
+                { 
 
                     sr = new StreamReader(fs);
 
                     while (!sr.EndOfStream)
                     {
-                        for (int i = 0; i < Score.Length; i++)
-                        {
-                            string[] data = null;
+                        
+                        string zeile =  sr.ReadLine();
+                        string[] data = zeile.Split('#');
+                        
 
-                            line = sr.ReadLine(); //Lesen aller Datensätze in eine Zeichenkette!
-                            //data[i] = line.Split(';');
-                        }
+
                     }
 
-                    for (int i = 0; i < line.Length; i++)
-                    {
-                        int.TryParse(line, out score);
-                        Score[i] = score;
-                    }
+                    
 
                 }
             }
         }
 
-        public static int[] Sort(Computer computer, Mensch mensch)
+
+        public static List<Tuple<String,int, Double, string>> Highscores(Mensch mensch, Computer computer, ref List<Tuple<String, int, Double, string>> highscores)
         {
+            double erfolgsquote = (computer.AnzahlRichtigerPaare / computer.AnzahlAufgedecktePaare) * 100; 
 
-            for (int i = Score.Length + 1; i < Score.Length + 2; i++)
-            {
-                Score[i] = mensch.Score;
-                Name[i] = mensch.Name;
-            }
+            highscores.Add(new Tuple<String,int, Double,string>(mensch.Name,mensch.Score, erfolgsquote,"#"));
 
-            bool vertauscht;
-            do
-            {
-                vertauscht = false;
-                for (int i = 0; i < Score.Length - 2; i++)
-                {
-                    if (Score[i] > Score[i + 1])
-                    {
-                        int puffer = Score[i];
-                        string puffername = Name[i];
-                        Score[i] = Score[i + 1];
-                        Name[i] = Name[i + 1];
-                        Score[i + 1] = puffer;
-                        Name[i + 1] = puffername;
+            highscores.Sort((s1, s2) => s1.Item2.CompareTo(s2.Item2));
 
-                        vertauscht = true;
-                    }
-                }
-            } while (vertauscht);
-
-
-
-            int[] SortedHighscore = new int[Score.Length + Name.Length];
-            Array.Copy(Score, SortedHighscore, Score.Length);
-            Array.Copy(Name, 0, SortedHighscore, Score.Length, Name.Length);
-
-
-
-
-
-            return SortedHighscore;
-
-
+            return highscores;
 
         }
 
-        public static void Highscores(Mensch mensch, Computer computer)
-        {
-            Highscore[] highscores = null;
-            for (int i = 0; i < highscores.Length; i++)
-            {
-                Array.Resize(ref highscores, highscores.Length + 1);
-                highscores[i] = new Highscore(mensch.Name, mensch.Score);
 
-            }
-            highscores[highscores.Length] = mensch.Name + mensch.Score;
-        }
-
-        private void bubbleSort(ref Mensch[] pListe)
-        {
-            for (int i = pListe.Length - 1; i > 0; i--)
-            {
-                for (int k = 0; k < i; k++)
-                {
-                    if (pListe[k].Score < pListe[k + 1].Score) //vertausche
-                    {
-                        Mensch speicher = new(pListe[k]);
-                        pListe[k] = pListe[k + 1];
-                        pListe[k + 1] = speicher;
-                    }
-                }
-            }
-        }*/
     }
 
 

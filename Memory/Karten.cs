@@ -41,7 +41,8 @@ namespace Memory {
         /// <returns>Kartensatz</returns>
         public string[] AuswahlKartensatz()
         {
-            string[] Inhalt = new string[8] { "Informatik", "C#", "Hello World", "Array", "Polymorphie", "Vererbung", "Visual Studio", "Properties" };
+            
+            string[] Inhalt = new string[] { "Informatik", "C#", "Hello World", "Array", "Polymorphie", "Vererbung", "Visual Studio", "Properties", "Informatik", "C#", "Hello World", "Array", "Polymorphie", "Vererbung", "Visual Studio", "Properties" };
            
             return Inhalt ;
             
