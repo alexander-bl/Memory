@@ -156,7 +156,18 @@ namespace Memory {
         }
 
         private void SpielBeenden() {
+            if (_computer.Difficulty == "Normal") {
+                Highscore.WriteToFile(_computer, _mensch);
 
+            } else {
+                Highscore.WriteToFileSchwer(_computer, _mensch);
+            }
+
+            if (_mensch.AnzahlGefundenerPaare >= _computer.AnzahlGefundenerPaare) {
+                MessageBox.Show("Herzlichen Glückwunsch!\nSie haben das Spiel mit" + _mensch.Score + " Punkten gewonnen!");
+            } else {
+                MessageBox.Show("Schade!\nSie haben das Spiel leider mit" + _mensch.Score + " verloren.");
+            }
         }
 
         private void GedaechnisLoeschen(Spieler spieler1, Spieler spieler2,
@@ -347,7 +358,7 @@ namespace Memory {
                                 tBox_Button10.Visibility = Visibility.Hidden;
                                 break;
                             case 3:
-                                tBox_Button11.Visibility = Visibility.Hidden; ;
+                                tBox_Button11.Visibility = Visibility.Hidden; 
                                 break;
                             case 4:
                                 tBox_Button12.Visibility = Visibility.Hidden;
