@@ -123,15 +123,15 @@ namespace Memory {
             }
         }
 
-        public async void Event(Func<KnownCard, Task> ButtonEvent, KnownCard card) {
-            await ButtonEvent(card);
-        }
+        //public async void Event(Func<KnownCard, Task> ButtonEvent, KnownCard card) {
+            //await ButtonEvent(card);
+        //}
 
         /// <summary>
         /// Auswahl welche Karte angeschaut wird
         /// </summary>
         /// <param name="buttons"></param>
-        public async void Karteanschauen(ref Button[] buttons, KnownCard card) {
+        public async void Karteanschauen(/*ref Button[] buttons,*/ KnownCard card) {
             MainWindow mainWindow = new MainWindow();
             GeseheneKarten.Sort((s1, s2) => s1.Karte.CompareTo(s2.Karte));//Sortiere Karten Liste
 
@@ -142,17 +142,17 @@ namespace Memory {
 
                     //Alle Karten im Gedächniss durchschauen
                     if (GeseheneKarten[i].Karte == GeseheneKarten[i + 1].Karte) {
-
-                        //Wenn gleiche Karte gefunden dann klicke auf Karte 
+                        await mainWindow.ButtonEvent(GeseheneKarten[i]);
+                        /*//Wenn gleiche Karte gefunden dann klicke auf Karte 
                         switch (GeseheneKarten[i].Zeile) {
                             case 1:
                                 switch (GeseheneKarten[i].Spalte) {
                                     case 1:
                                         await mainWindow.ButtonEvent(GeseheneKarten[i]);
-                                        buttons[0].RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                                        //buttons[0].RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                                         break;
                                     case 2:
-                                        buttons[1].RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                                        //buttons[1].RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                                         break;
                                     case 3:
                                         buttons[2].RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
@@ -222,8 +222,7 @@ namespace Memory {
                                     default:
                                         break;
                                 }
-                                break;
-                        }
+                                break;*/
                     }
                 } else {
                     //Wenn Karte im Gedächnis gleich aktuell gewählte karte, dann überspribge diese
@@ -231,8 +230,8 @@ namespace Memory {
                         i++;
                     }
                     if (GeseheneKarten[i].Karte == card.Karte) {
-
-                        //Wenn gleiche Karte gefunden dann klicke auf Karte 
+                        await mainWindow.ButtonEvent(GeseheneKarten[i]);
+                        /*//Wenn gleiche Karte gefunden dann klicke auf Karte 
                         switch (GeseheneKarten[i].Zeile) {
                             case 1:
                                 switch (GeseheneKarten[i].Spalte) {
@@ -310,8 +309,8 @@ namespace Memory {
                                     default:
                                         break;
                                 }
-                                break;
-                        }
+                                break;*/
+                    }
                     }
                 }
             }
