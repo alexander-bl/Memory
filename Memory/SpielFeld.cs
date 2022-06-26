@@ -60,7 +60,7 @@ namespace Memory
 
             Random rnd = new Random();
             int s = 4, z = 4;
-            string[,] Field = new string[8, 8];
+            string[,] Field = new string[4, 4];
             int zufallszahl;
             int var = 15;
 

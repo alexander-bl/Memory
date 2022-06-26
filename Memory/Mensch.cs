@@ -71,14 +71,18 @@ namespace Memory {
         /// </summary>
         /// <param name="buttons"></param>
         /// <returns></returns>
-        public override Button Random(List<Button> buttons) {
-            int x;
+        public override KnownCard Random(SpielFeld spielFeld) {
+            int zeile;
+            int spalte;
+            KnownCard card;
             do {
                 Random rnd = new Random();
-                x = rnd.Next(buttons.Count);//Auswahl Zufälliger Button
-            } while (!buttons[x].IsEnabled);//Wenn ausgesuchter Button deaktiviert ist nehme anderen zufälligen Button 
+                zeile = rnd.Next(0, 3);
+                spalte = rnd.Next(0, 3);
+                card = new KnownCard(spielFeld.Feld[zeile, spalte], zeile + 1, spalte + 1);//Auswahl Zufälliger Karte
+            } while ((spielFeld.Feld[zeile, spalte] == ""));//Wenn ausgesuchte Karte bereits Deaktiviert ist nehme anderen zufällige Karte
 
-            return buttons[x];
+            return card;
         }
 
         /// <summary>
