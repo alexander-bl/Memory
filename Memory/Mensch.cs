@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Windows.Controls;
-using System.Collections.Generic;
 /*
  * Kindklasse von Spieler
  * Autoren: Alexander Bletsch, Anna Stork
@@ -21,7 +19,7 @@ namespace Memory {
         public Mensch(string name, bool aktiveRunde) : base(aktiveRunde) {
             Name = name;
             Score = 0;
-            Stopwatch = new Stopwatch();    
+            Stopwatch = new Stopwatch();
         }
 
         public string Name {
@@ -71,19 +69,20 @@ namespace Memory {
         /// </summary>
         /// <param name="buttons"></param>
         /// <returns></returns>
-        public override KnownCard Random(SpielFeld spielFeld) {
+        public override KnownCard Random(SpielFeld spielFeld, Random rnd, KnownCard aktcard) {
             int zeile;
             int spalte;
             KnownCard card;
             do {
-                Random rnd = new Random();
                 zeile = rnd.Next(0, 3);
                 spalte = rnd.Next(0, 3);
                 card = new KnownCard(spielFeld.Feld[zeile, spalte], zeile + 1, spalte + 1);//Auswahl Zufälliger Karte
-            } while ((spielFeld.Feld[zeile, spalte] == ""));//Wenn ausgesuchte Karte bereits Deaktiviert ist nehme anderen zufällige Karte
+            } while (spielFeld.Feld[zeile, spalte] == "" || (aktcard.Spalte == card.Spalte && aktcard.Zeile == card.Zeile));
+            //Wenn ausgesuchte Karte bereits Deaktiviert ist nehme anderen zufällige Karte
 
             return card;
         }
+
 
         /// <summary>
         /// Handled die Offenen Karten und Zeit des aktuell Spielenden Menschen
@@ -99,9 +98,10 @@ namespace Memory {
                 return false;//false weil aufgedeckte Karte die erste Karte der Runde ist
             } else {
                 Stopwatch.Stop();
-                 OffeneKarten = new Tuple<KnownCard, KnownCard>(OffeneKarten.Item1, card);
+                OffeneKarten = new Tuple<KnownCard, KnownCard>(OffeneKarten.Item1, card);
                 return true;//true weil aufgedeckte Karte die zweite Karte der Runde ist
             }
         }
     }
 }
+

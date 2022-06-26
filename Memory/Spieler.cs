@@ -70,7 +70,7 @@ namespace Memory {
         /// </summary>
         /// <param name="spielFeld"></param>
         /// <returns></returns>
-        public abstract KnownCard Random(SpielFeld spielFeld);
+        public abstract KnownCard Random(SpielFeld spielFeld, Random rnd, KnownCard aktcard);
 
         /// <summary>
         /// Handled die Offenen Karten und Zeit des aktuell Spielenden Spielers

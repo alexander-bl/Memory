@@ -96,25 +96,16 @@ namespace Memory {
         /// </summary>
         /// <param name="buttons"></param>
         /// <returns></returns>
-        public override KnownCard Random(SpielFeld spielFeld) {
-            //Log.Logger = new LoggerConfiguration()
-                            //.WriteTo.File(@"C:\Temp\Log.txt", outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
-                            //.CreateLogger();
+        public override KnownCard Random(SpielFeld spielFeld, Random rnd, KnownCard aktcard) {
             int zeile;
             int spalte;
             KnownCard card;
             do {
-                Random rnd = new Random();
-                Log.Warning("\n");
-                Log.Error(rnd.ToString());
                 zeile = rnd.Next(0, 3);
-                Log.Error(zeile.ToString());
                 spalte = rnd.Next(0, 3);
-                Log.Error(spalte.ToString());
                 card = new KnownCard(spielFeld.Feld[zeile,spalte], zeile+1, spalte+1);//Auswahl Zufälliger Karte
-                Log.Error(card.ToString());
-                Log.Warning("\n");
-            } while (spielFeld.Feld[zeile,spalte] == "");//Wenn ausgesuchte Karte bereits Deaktiviert ist nehme anderen zufällige Karte
+            } while (spielFeld.Feld[zeile,spalte] == "" || (aktcard.Spalte == card.Spalte && aktcard.Zeile == card.Zeile));
+                            //Wenn ausgesuchte Karte bereits Deaktiviert ist nehme anderen zufällige Karte
 
             return card;
         }
