@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Serilog;
 
 namespace Memory {
     /// <summary>
@@ -41,6 +40,7 @@ namespace Memory {
                     //Alle Karten im Gedächniss durchschauen
                     if (_computer.GeseheneKarten[i].Karte == _computer.GeseheneKarten[i + 1].Karte) {
                         //Log.Warning("stelle 2, " + i);
+                        Log.Warning("stelle 2, " + i);
                         await ButtonEvent(_computer.GeseheneKarten[i]);
                         return;
                     }
@@ -86,6 +86,8 @@ namespace Memory {
         private async Task ButtonEvent(KnownCard card) {
             ButtonContentShow(card);
             Spieler spieler;
+
+            
 
             //Setze fest welcher Spieler an der Reihe ist
             if (_mensch.AktiveRunde) {
@@ -388,6 +390,87 @@ namespace Memory {
                         }
                         break;
                 }
+            }
+        }
+
+        private void ButtonContentShow(KnownCard card) {
+            //Verstecken des karten paars
+            switch (card.Zeile) {
+                case 1:
+                    switch (card.Spalte) {
+                        case 1:
+                            tBox_Button.Visibility = Visibility.Visible;
+                            break;
+                        case 2:
+                            tBox_Button2.Visibility = Visibility.Visible;
+                            break;
+                        case 3:
+                            tBox_Button3.Visibility = Visibility.Visible;
+                            break;
+                        case 4:
+                            tBox_Button4.Visibility = Visibility.Visible;
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+
+                case 2:
+                    switch (card.Spalte) {
+                        case 1:
+                            tBox_Button5.Visibility = Visibility.Visible;
+                            break;
+                        case 2:
+                            tBox_Button6.Visibility = Visibility.Visible;
+                            break;
+                        case 3:
+                            tBox_Button7.Visibility = Visibility.Visible;
+                            break;
+                        case 4:
+                            tBox_Button8.Visibility = Visibility.Visible;
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+
+                case 3:
+                    switch (card.Spalte) {
+                        case 1:
+                            tBox_Button9.Visibility = Visibility.Visible;
+                            break;
+                        case 2:
+                            tBox_Button10.Visibility = Visibility.Visible;
+                            break;
+                        case 3:
+                            tBox_Button11.Visibility = Visibility.Visible;
+                            break;
+                        case 4:
+                            tBox_Button12.Visibility = Visibility.Visible;
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+
+                case 4:
+                    switch (card.Spalte) {
+                        case 1:
+                            tBox_Button13.Visibility = Visibility.Visible;
+                            break;
+                        case 2:
+                            tBox_Button14.Visibility = Visibility.Visible;
+                            break;
+                        case 3:
+                            tBox_Button15.Visibility = Visibility.Visible;
+                            break;
+                        case 4:
+                            tBox_Button16.Visibility = Visibility.Visible;
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
             }
         }
 
