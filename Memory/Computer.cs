@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -95,16 +96,16 @@ namespace Memory {
         /// </summary>
         /// <param name="buttons"></param>
         /// <returns></returns>
-        public override KnownCard Random(SpielFeld spielFeld) {
+        public override KnownCard Random(SpielFeld spielFeld, Random rnd, KnownCard aktcard) {
             int zeile;
             int spalte;
             KnownCard card;
             do {
-                Random rnd = new Random();
                 zeile = rnd.Next(0, 3);
                 spalte = rnd.Next(0, 3);
                 card = new KnownCard(spielFeld.Feld[zeile,spalte], zeile+1, spalte+1);//Auswahl Zufälliger Karte
-            } while (spielFeld.Feld[zeile,spalte] == "");//Wenn ausgesuchte Karte bereits Deaktiviert ist nehme anderen zufällige Karte
+            } while (spielFeld.Feld[zeile,spalte] == "" || (aktcard.Spalte == card.Spalte && aktcard.Zeile == card.Zeile));
+                            //Wenn ausgesuchte Karte bereits Deaktiviert ist nehme anderen zufällige Karte
 
             return card;
         }

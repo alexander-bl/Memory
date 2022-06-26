@@ -15,6 +15,7 @@ namespace Memory {
         Computer _computer = null;
         Button[] _buttons = null;
         SpielFeld _spielFeld = null;
+        Random _random = null;
         public MainWindow() {
             InitializeComponent();
 
@@ -34,11 +35,11 @@ namespace Memory {
             for (int i = 0; i < _computer.GeseheneKarten.Count - 1; i++) {
 
                 //Wenn Coumputer noch keine Karte angeschaut hatt entscheidung welche gewählt wird
-                if (_computer.GeseheneKarten.Count % 2 == 0) {
+                if (_computer.OffeneKarten.Item1.Karte == "") {
                     Log.Warning("stelle 1, " + _computer.GeseheneKarten.Count);
                     //Alle Karten im Gedächniss durchschauen
                     if (_computer.GeseheneKarten[i].Karte == _computer.GeseheneKarten[i + 1].Karte) {
-                        Log.Warning("stelle 2, " + i);
+                        //Log.Warning("stelle 2, " + i);
                         await ButtonEvent(_computer.GeseheneKarten[i]);
                         return;
                     }
@@ -48,7 +49,7 @@ namespace Memory {
                     //Wenn Karte im Gedächnis gleich aktuell gewählte karte, dann überspribge diese
                     if ((_computer.GeseheneKarten[i].Zeile == card.Zeile) && (_computer.GeseheneKarten[i].Spalte == card.Spalte)) {
                         Log.Warning("stelle 3, " + i);
-                        continue;
+                        i++;
                     }
                     if (_computer.GeseheneKarten[i].Karte == card.Karte) {
                         Log.Warning("stelle 4, " + i);
@@ -57,7 +58,7 @@ namespace Memory {
                     }
                 }
             }
-            KnownCard rndCard = _computer.Random(_spielFeld);
+            KnownCard rndCard = _computer.Random(_spielFeld, _random, card);
             Log.Warning("stelle 5, ");
             await ButtonEvent(rndCard);
         }
@@ -82,12 +83,8 @@ namespace Memory {
         }
 
         private async Task ButtonEvent(KnownCard card) {
-            
-
             ButtonContentShow(card);
             Spieler spieler;
-
-            
 
             //Setze fest welcher Spieler an der Reihe ist
             if (_mensch.AktiveRunde) {
@@ -100,9 +97,7 @@ namespace Memory {
             string str = card.Karte.ToString() + ", " + card.Zeile.ToString() + ", " + card.Spalte.ToString() + " # " + spieler.ToString();
             Log.Error(logcounter + str);
 
-            //Karte ins Gedächnis Speichern
-            _mensch.Gedaechtnis(card);
-            _computer.Gedaechtnis(card);
+            
 
             if (spieler.OffeneKartenHandler(card)) {//Funktonsaufruf zum umgang mit aufgedeckten Karten
 
@@ -113,7 +108,7 @@ namespace Memory {
 
                     //Punkte für richtiges paar für Mensch 
                     if (_mensch.AktiveRunde) {
-                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
+                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000000;
                         _mensch.Score += newscore;
                         tBoxPunkte.Text = _mensch.Score.ToString();
                     } else {
@@ -140,15 +135,14 @@ namespace Memory {
                 }
 
                 //Wechseln wer an der Reihe ist
-                if (_mensch.AktiveRunde) {
-                    _mensch.AktiveRunde = false;
-                    _computer.AktiveRunde = true;
-                } else {
-                    _mensch.AktiveRunde = true;
-                    _computer.AktiveRunde = false;
-                }
-                //_mensch.AktiveRunde = !_mensch.AktiveRunde;
-                //_computer.AktiveRunde = !_mensch.AktiveRunde;
+                _mensch.AktiveRunde = !_mensch.AktiveRunde;
+                _computer.AktiveRunde = !_mensch.AktiveRunde;
+
+                //Karten ins Gedächnis Speichern
+                _mensch.Gedaechtnis(spieler.OffeneKarten.Item1);
+                _computer.Gedaechtnis(spieler.OffeneKarten.Item1);
+                _mensch.Gedaechtnis(spieler.OffeneKarten.Item2);
+                _computer.Gedaechtnis(spieler.OffeneKarten.Item2);
 
                 //Offene Karten reseten
                 spieler.OffeneKarten = new Tuple<KnownCard, KnownCard>(
@@ -504,6 +498,8 @@ namespace Memory {
             tBox_Button14.Text = _spielFeld.Feld[3, 1];
             tBox_Button15.Text = _spielFeld.Feld[3, 2];
             tBox_Button16.Text = _spielFeld.Feld[3, 3];
+
+            _random = new Random();
         }
 
         private void MenuItem_Highscore_Click(object sender, RoutedEventArgs e) {
@@ -532,7 +528,7 @@ namespace Memory {
                 return;
             }
 
-            KnownCard card = _mensch.Random(_spielFeld);
+            KnownCard card = _mensch.Random(_spielFeld, _random, new KnownCard("", 0, 0));
             await ButtonEvent(card);
         }
 
