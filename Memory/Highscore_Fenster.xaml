@@ -7,7 +7,458 @@
         mc:Ignorable="d"
         Title="Highscore" Height="450" Width="800"
         WindowStartupLocation="CenterScreen">
-    <Grid>
+    <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal">
+            <Label HorizontalContentAlignment="Center" Width="799" Height="42" FontSize="24" FontWeight="Bold">
+                Highscore
+            </Label>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Label Width="26"></Label>
+            <Label Width="387" HorizontalContentAlignment="Center" FontWeight="Bold">
+                Normal
+            </Label>
+            <Label Width="387" HorizontalContentAlignment="Center" FontWeight="Bold">
+                Schwer
+            </Label>
+        </StackPanel>
         
-    </Grid>
+        <StackPanel Orientation="Horizontal">
+            <Label Width="26"></Label>
+            <Label Width="128" HorizontalContentAlignment="Center">
+                Name
+            </Label>
+            <Label Width="128" HorizontalContentAlignment="Center">
+                Punkte
+            </Label>
+            <Label Width="128" HorizontalContentAlignment="Center" Height="35">
+                Effektivität Computer
+            </Label>
+            <Label Width="128" HorizontalContentAlignment="Center">
+                Name
+            </Label>
+            <Label Width="128" HorizontalContentAlignment="Center">
+                Punkte
+            </Label>
+            <Label Width="128" HorizontalContentAlignment="Center" Height="35">
+                Effektivität Computer
+            </Label>
+
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Height="25">
+            <Label Width="26" Height="25">
+                1.
+            </Label>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox1Name" TextAlignment="Center" TextWrapping="NoWrap" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox1Punkte" TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox1Computer" TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox1Names" TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox1Punktes" TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox1Computers" TextAlignment="Center" Height="25">
+            </TextBox>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal">
+            <Label Width="26" Height="25">
+                2.
+            </Label>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox2Name"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox2Punkte" Height="25"
+                TextAlignment="Center">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox2Computer"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox2Names"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox2Punktes" Height="25"
+                TextAlignment="Center">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox2Computers"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal">
+            <Label Width="26" Height="25">
+                3.
+            </Label>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox3Name"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox3Punkte" Height="25"
+                TextAlignment="Center">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox3Computer"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox3Names"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox3Punktes" Height="25"
+                TextAlignment="Center">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox3Computers"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal">
+            <Label Width="26" Height="25">
+                4.
+            </Label>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox4Name"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox4Punkte" Height="25"
+                TextAlignment="Center">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox4Computer"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox4Names"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox4Punktes" Height="25"
+                TextAlignment="Center" >
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox4Computers"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal">
+            <Label Width="26" Height="25">
+                5.
+            </Label>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox5Name"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox5Punkte" Height="25"
+                TextAlignment="Center">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox5Computer"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox5Names"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox5Punktes" Height="25"
+                TextAlignment="Center">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox5Computers"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal">
+            <Label Width="26" Height="25">
+                6.
+            </Label>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox6Name"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox6Punkte" Height="25"
+                TextAlignment="Center">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox6Computer"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox6Names"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox6Punktes" Height="25"
+                TextAlignment="Center">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox6Computers"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal">
+            <Label Width="26" Height="25">
+                7.
+            </Label>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox7Name"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox7Punkte" Height="25"
+                TextAlignment="Center">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox7Computer"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox7Names"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox7Punktes" Height="25"
+                TextAlignment="Center">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox7Computers"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal">
+            <Label Width="26" Height="25">
+                8.
+            </Label>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox8Name"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox8Punkte" Height="25"
+                TextAlignment="Center">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox8Computer"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox8Names"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox8Punktes" Height="25"
+                TextAlignment="Center">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox8Computers"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal">
+            <Label Width="26" Height="25">
+                9.
+            </Label>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox9Name"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox9Punkte" Height="25"
+                TextAlignment="Center">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox9Computer"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox9Names"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox9Punktes" Height="25"
+                TextAlignment="Center">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox9Computers"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal">
+            <Label Width="26" Height="25">
+                10.
+            </Label>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox10Name"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox10Punkte" Height="25"
+                TextAlignment="Center">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox10Computer"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox10Names"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox10Punktes" Height="25"
+                TextAlignment="Center">
+            </TextBox>
+            <TextBox
+                IsReadOnly="True"
+                Width="128"
+                x:Name="tBox10Computers"
+                TextAlignment="Center" Height="25">
+            </TextBox>
+        </StackPanel>
+
+
+    </StackPanel>
 </Window>

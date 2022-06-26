@@ -2,9 +2,9 @@ Memory
 
 Ziel des Spiels ist es, die meisten Paare aufzudecken.
 Dazu muss nacheinander auf zwei verschiedene Karten geklickt werden. 
-Sind die Karten identisch, erhält man einen Punkt.
+Sind die Karten identisch, erhält man Punkte.
 Danach ist der Computer dran.
 Sind alle Karten aufgedeckt, ist das Spiel vorbei.
-Über den "Hinweis" Button kann man sich eine Tipp geben lassen.
-Klickt man auf diesen Button, wird angezeigt, in welcher Zeile/Spalte sich eine passende Karte befindet.
+Über den "Hinweis" Button kann man sich einen Tipp geben lassen.
+Klickt man auf diesen Button wird angezeigt, in welcher Zeile/Spalte sich eine passende Karte befindet.
 Über den Random Button kann man zwei Karten durch zufall auswählen lassen.

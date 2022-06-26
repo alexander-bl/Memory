@@ -14,9 +14,9 @@ namespace Memory
     public static class Highscore
     {
 
-        public static void WriteToFile(Computer computer, Mensch mensch, ref List<Tuple<String, int, double, string>> highscores)
+        public static void WriteToFile(Computer computer, Mensch mensch, ref List<Tuple<String, string, int, string, Double,string, string>> highscores)
         {
-            ReadFromFile(computer, mensch);
+            ReadFromFile();
             Highscores(mensch, computer, ref highscores);
 
             string pfad = @"..\highscoreNormal.txt";
@@ -27,14 +27,17 @@ namespace Memory
                 StreamWriter sw = new StreamWriter(fs);
 
                 sw.Write(highscores);
+                sw.Write(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+                
+
                 sw.Flush();
             }
           
         }
 
-        public static void ReadFromFile(Computer computer, Mensch mensch)
+        public static string ReadFromFile()
         {
-            
+            string zeile = null;
             FileStream fs = null;
             StreamReader sr = null;
             string pfad = @"..\highscoreNormal.txt";
@@ -47,11 +50,9 @@ namespace Memory
 
                     while (!sr.EndOfStream)
                     {
-                        
-                        string zeile =  sr.ReadLine();
-                        string[] data = zeile.Split('#');
-                        
-
+                       
+                        zeile = sr.ReadLine();
+                        string[] data = zeile.Split(';');
 
                     }
 
@@ -59,16 +60,47 @@ namespace Memory
 
                 }
             }
+            return zeile;
+           
         }
 
+        public static string ReadFromFileSchwer()
+        {
+            string zeile = null;
+            FileStream fs = null;
+            StreamReader sr = null;
+            string pfad = @"..\highscoreSchwer.txt";
+            using (fs = new FileStream(pfad, FileMode.OpenOrCreate))
+            {
+                if (fs.CanRead)
+                {
 
-        public static List<Tuple<String,int, Double, string>> Highscores(Mensch mensch, Computer computer, ref List<Tuple<String, int, Double, string>> highscores)
+                    sr = new StreamReader(fs);
+
+                    while (!sr.EndOfStream)
+                    {
+
+                        zeile = sr.ReadLine();
+                        string[] data = zeile.Split(';');
+
+                    }
+
+
+
+                }
+            }
+            return zeile;
+
+        }
+
+        public static List<Tuple<String,string,int,string, Double,string, string>> Highscores(Mensch mensch, Computer computer, ref List<Tuple<String, string, int, string, Double,string, string>> highscores)
         {
             double erfolgsquote = (computer.AnzahlRichtigerPaare / computer.AnzahlAufgedecktePaare) * 100; 
 
-            highscores.Add(new Tuple<String,int, Double,string>(mensch.Name,mensch.Score, erfolgsquote,"#"));
+            highscores.Add(new Tuple<String, string, int,string, Double,string, string>(mensch.Name,";",mensch.Score,";", erfolgsquote,"%",";"));
 
-            highscores.Sort((s1, s2) => s1.Item2.CompareTo(s2.Item2));
+            highscores.Sort((s1, s2) => s1.Item3.CompareTo(s2.Item3));
+
 
             return highscores;
 
