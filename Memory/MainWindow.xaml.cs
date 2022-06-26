@@ -7,19 +7,24 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using System.Windows.Input;
+using Serilog;
 
 namespace Memory {
     /// <summary>
     /// Interaktionslogik für MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-
+        int logcounter = 0;
         Mensch _mensch = null;
         Computer _computer = null;
         Button[] _buttons = null;
         SpielFeld _spielFeld = null;
         public MainWindow() {
             InitializeComponent();
+
+            Log.Logger = new LoggerConfiguration()
+                            .WriteTo.File(@"C:\Temp\Log.txt", outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+                            .CreateLogger();
 
             _buttons = new Button[]{Button, Button2, Button3, Button4, Button4, Button5,
                                 Button6, Button7, Button8, Button9, Button10, Button11,
@@ -44,6 +49,79 @@ namespace Memory {
             Button14.IsEnabled = isEnabled;
             Button15.IsEnabled = isEnabled;
             Button16.IsEnabled = isEnabled;
+        }
+
+        public async Task ButtonEvent(KnownCard card) {
+            logcounter++;
+            Log.Error(logcounter.ToString());
+            Spieler spieler;
+
+            //Setze fest welcher Spieler an der Reihe ist
+            if (_mensch.AktiveRunde) {
+                spieler = _mensch;
+            } else {
+                spieler = _computer;
+            }
+
+            //Karte ins Gedächnis Speichern
+            _mensch.Gedaechtnis(card);
+            _computer.Gedaechtnis(card);
+
+            if (spieler.OffeneKartenHandler(card)) {//Funktonsaufruf zum umgang mit aufgedeckten Karten
+
+                //Kartenvergleichen
+                if (await KartenVergleich(spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2)) {
+
+                    spieler.AnzahlGefundenerPaare++;
+
+                    //Punkte für richtiges paar für Mensch 
+                    if (_mensch.AktiveRunde) {
+                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
+                        _mensch.Score += newscore;
+                        tBoxPunkte.Text = _mensch.Score.ToString();
+                    } else {
+
+                        //Punkte für richtiges paar für Computer
+                        _computer.AnzahlAufgedecktePaare++;
+                        _computer.AnzahlRichtigerPaare++;
+                    }
+
+                    //Richtiges Kartenpaar vom Gedächnis und vom Spielfeld entfernen
+                    GedaechnisLoeschen(_mensch, _computer, spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2);
+                    ButtonDeaktivieren(spieler);
+
+                    //Wenn Karten paar nicht korrekt, dann zähler computer erhöhen
+                } else if (_computer.AktiveRunde) {
+                    _computer.AnzahlAufgedecktePaare++;
+                }
+
+                ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde
+                //Spiel Beenden wenn alle Karten paare gefunden sind
+                if (_mensch.AnzahlGefundenerPaare + _computer.AnzahlGefundenerPaare == 8) {
+                    SpielBeenden();
+                    return;
+                }
+
+                //Wechseln wer an der Reihe ist
+                if (_mensch.AktiveRunde) {
+                    _mensch.AktiveRunde = false;
+                    _computer.AktiveRunde = true;
+                } else {
+                    _mensch.AktiveRunde = true;
+                    _computer.AktiveRunde = false;
+                }
+                //_mensch.AktiveRunde = !_mensch.AktiveRunde;
+                //_computer.AktiveRunde = !_mensch.AktiveRunde;
+
+                //Offene Karten reseten
+                spieler.OffeneKarten = new Tuple<KnownCard, KnownCard>(
+                        new KnownCard("", 0, 0), new KnownCard("", 0, 0));
+            }
+
+            //Computer entscheidung welche Buttons gedrückt werden
+            if (_computer.AktiveRunde) {
+                _computer.Karteanschauen(/*ref _buttons,*/ card);
+            }
         }
 
         private void SpielBeenden() {
@@ -256,7 +334,6 @@ namespace Memory {
             }
         }
 
-
         private void MenuItem_NeuesSpiel_Click(object sender, RoutedEventArgs e) {
             //Neues Dialog Fenster für neues Spiel erstellen Starten
             Neues_Spiel_Fenster neuesSpielFenster = new Neues_Spiel_Fenster();
@@ -332,1157 +409,107 @@ namespace Memory {
             button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         }
 
-        //Button Events
+
+
+        /*
+         * 
+         * Button Events
+         * 
+         */
         private async void Button_Click(object sender, RoutedEventArgs e) {
             KnownCard card = new KnownCard(tBox_Button.Text, 1, 1);//Karte des Buttons
             tBox_Button.Visibility = Visibility.Visible;
-            Spieler spieler;
-
-            //Setze fest welcher Spieler an der Reihe ist
-            if (_mensch.AktiveRunde) {
-                spieler = _mensch;
-            } else {
-                spieler = _computer;
-            }
-
-            //Karte ins Gedächnis Speichern
-            _mensch.Gedaechtnis(card);
-            _computer.Gedaechtnis(card);
-            
-            if (spieler.OffeneKartenHandler(card)) {//Funktonsaufruf zum umgang mit aufgedeckten Karten
-                   
-                //Kartenvergleichen
-                if (await KartenVergleich(spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2)) {
-
-                    spieler.AnzahlGefundenerPaare++;
-                       
-                    //Punkte für richtiges paar für Mensch 
-                    if (_mensch.AktiveRunde) {
-                        int newscore = (1/( (int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000; 
-                        _mensch.Score += newscore;
-                        tBoxPunkte.Text = _mensch.Score.ToString();
-                    } else {
-                        
-                        //Punkte für richtiges paar für Computer
-                        _computer.AnzahlAufgedecktePaare++;
-                        _computer.AnzahlRichtigerPaare++;
-                    }
-
-                    //Richtiges Kartenpaar vom Gedächnis und vom Spielfeld entfernen
-                    GedaechnisLoeschen(_mensch, _computer, spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2);
-                    ButtonDeaktivieren(spieler);
-
-                    //Wenn Karten paar nicht korrekt, dann zähler computer erhöhen
-                }else if (_computer.AktiveRunde) {
-                    _computer.AnzahlAufgedecktePaare++;
-                }
-
-                ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde
-                //Spiel Beenden wenn alle Karten paare gefunden sind
-                if (_mensch.AnzahlGefundenerPaare + _computer.AnzahlGefundenerPaare == 8) {
-                    SpielBeenden();
-                    return;
-                }
-
-                //Wechseln wer an der Reihe ist
-                if (_mensch.AktiveRunde) {
-                    _mensch.AktiveRunde = false;
-                    _computer.AktiveRunde = true;
-                } else {
-                    _mensch.AktiveRunde = true;
-                    _computer.AktiveRunde = false;
-                }
-
-                //Offene Karten reseten
-                spieler.OffeneKarten = new Tuple<KnownCard, KnownCard>(
-                        new KnownCard("", 0, 0), new KnownCard("", 0, 0));
-            }
-
-            //Computer entscheidung welche Buttons gedrückt werden
-            if (_computer.AktiveRunde) {
-                _computer.Karteanschauen(ref _buttons, card);
-
-            }
+            await ButtonEvent(card);
         }//Button 1
 
         private async void Button_Click_2(object sender, RoutedEventArgs e) {
             KnownCard card = new KnownCard(tBox_Button2.Text, 1, 2);//Karte des Buttons
             tBox_Button2.Visibility = Visibility.Visible;
-            Spieler spieler;
-
-            //Setze fest welcher Spieler an der Reihe ist
-            if (_mensch.AktiveRunde) {
-                spieler = _mensch;
-            } else {
-                spieler = _computer;
-            }
-
-            //Karte ins Gedächnis Speichern
-            _mensch.Gedaechtnis(card);
-            _computer.Gedaechtnis(card);
-
-            if (spieler.OffeneKartenHandler(card)) {//Funktonsaufruf zum umgang mit aufgedeckten Karten
-
-                //Kartenvergleichen
-                if (await KartenVergleich(spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2)) {
-
-                    spieler.AnzahlGefundenerPaare++;
-
-                    //Punkte für richtiges paar für Mensch 
-                    if (_mensch.AktiveRunde) {
-                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
-                        _mensch.Score += newscore;
-                        tBoxPunkte.Text = _mensch.Score.ToString();
-                    } else {
-
-                        //Punkte für richtiges paar für Computer
-                        _computer.AnzahlAufgedecktePaare++;
-                        _computer.AnzahlRichtigerPaare++;
-                    }
-
-                    //Richtiges Kartenpaar vom Gedächnis und vom Spielfeld entfernen
-                    GedaechnisLoeschen(_mensch, _computer, spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2);
-                    ButtonDeaktivieren(spieler);
-
-                    //Wenn Karten paar nicht korrekt, dann zähler computer erhöhen
-                } else if (_computer.AktiveRunde) {
-                    _computer.AnzahlAufgedecktePaare++;
-                }
-
-                ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde
-                //Spiel Beenden wenn alle Karten paare gefunden sind
-                if (_mensch.AnzahlGefundenerPaare + _computer.AnzahlGefundenerPaare == 8) {
-                    SpielBeenden();
-                    return;
-                }
-
-                //Wechseln wer an der Reihe ist
-                if (_mensch.AktiveRunde) {
-                    _mensch.AktiveRunde = false;
-                    _computer.AktiveRunde = true;
-                } else {
-                    _mensch.AktiveRunde = true;
-                    _computer.AktiveRunde = false;
-                }
-
-                //Offene Karten reseten
-                spieler.OffeneKarten = new Tuple<KnownCard, KnownCard>(
-                        new KnownCard("", 0, 0), new KnownCard("", 0, 0));
-            }
-
-            //Computer entscheidung welche Buttons gedrückt werden
-            if (_computer.AktiveRunde) {
-                _computer.Karteanschauen(ref _buttons, card);
-
-            }
+            await ButtonEvent(card);
         }//Button 2
 
         private async void Button_Click_3(object sender, RoutedEventArgs e) {
             KnownCard card = new KnownCard(tBox_Button3.Text, 1, 3);//Karte des Buttons
             tBox_Button3.Visibility = Visibility.Visible;
-            Spieler spieler;
-
-            //Setze fest welcher Spieler an der Reihe ist
-            if (_mensch.AktiveRunde) {
-                spieler = _mensch;
-            } else {
-                spieler = _computer;
-            }
-
-            //Karte ins Gedächnis Speichern
-            _mensch.Gedaechtnis(card);
-            _computer.Gedaechtnis(card);
-
-            if (spieler.OffeneKartenHandler(card)) {//Funktonsaufruf zum umgang mit aufgedeckten Karten
-
-                //Kartenvergleichen
-                if (await KartenVergleich(spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2)) {
-
-                    spieler.AnzahlGefundenerPaare++;
-
-                    //Punkte für richtiges paar für Mensch 
-                    if (_mensch.AktiveRunde) {
-                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
-                        _mensch.Score += newscore;
-                        tBoxPunkte.Text = _mensch.Score.ToString();
-                    } else {
-
-                        //Punkte für richtiges paar für Computer
-                        _computer.AnzahlAufgedecktePaare++;
-                        _computer.AnzahlRichtigerPaare++;
-                    }
-
-                    //Richtiges Kartenpaar vom Gedächnis und vom Spielfeld entfernen
-                    GedaechnisLoeschen(_mensch, _computer, spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2);
-                    ButtonDeaktivieren(spieler);
-
-                    //Wenn Karten paar nicht korrekt, dann zähler computer erhöhen
-                } else if (_computer.AktiveRunde) {
-                    _computer.AnzahlAufgedecktePaare++;
-                }
-
-                ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde
-                //Spiel Beenden wenn alle Karten paare gefunden sind
-                if (_mensch.AnzahlGefundenerPaare + _computer.AnzahlGefundenerPaare == 8) {
-                    SpielBeenden();
-                    return;
-                }
-
-                //Wechseln wer an der Reihe ist
-                if (_mensch.AktiveRunde) {
-                    _mensch.AktiveRunde = false;
-                    _computer.AktiveRunde = true;
-                } else {
-                    _mensch.AktiveRunde = true;
-                    _computer.AktiveRunde = false;
-                }
-
-                //Offene Karten reseten
-                spieler.OffeneKarten = new Tuple<KnownCard, KnownCard>(
-                        new KnownCard("", 0, 0), new KnownCard("", 0, 0));
-            }
-
-            //Computer entscheidung welche Buttons gedrückt werden
-            if (_computer.AktiveRunde) {
-                _computer.Karteanschauen(ref _buttons, card);
-
-            }
+            await ButtonEvent(card);
         }//Button 3
 
         private async void Button_Click_4(object sender, RoutedEventArgs e) {
             KnownCard card = new KnownCard(tBox_Button4.Text, 1, 4);//Karte des Buttons
             tBox_Button4.Visibility = Visibility.Visible;
-            Spieler spieler;
-
-            //Setze fest welcher Spieler an der Reihe ist
-            if (_mensch.AktiveRunde) {
-                spieler = _mensch;
-            } else {
-                spieler = _computer;
-            }
-
-            //Karte ins Gedächnis Speichern
-            _mensch.Gedaechtnis(card);
-            _computer.Gedaechtnis(card);
-
-            if (spieler.OffeneKartenHandler(card)) {//Funktonsaufruf zum umgang mit aufgedeckten Karten
-
-                //Kartenvergleichen
-                if (await KartenVergleich(spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2)) {
-
-                    spieler.AnzahlGefundenerPaare++;
-
-                    //Punkte für richtiges paar für Mensch 
-                    if (_mensch.AktiveRunde) {
-                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
-                        _mensch.Score += newscore;
-                        tBoxPunkte.Text = _mensch.Score.ToString();
-                    } else {
-
-                        //Punkte für richtiges paar für Computer
-                        _computer.AnzahlAufgedecktePaare++;
-                        _computer.AnzahlRichtigerPaare++;
-                    }
-
-                    //Richtiges Kartenpaar vom Gedächnis und vom Spielfeld entfernen
-                    GedaechnisLoeschen(_mensch, _computer, spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2);
-                    ButtonDeaktivieren(spieler);
-
-                    //Wenn Karten paar nicht korrekt, dann zähler computer erhöhen
-                } else if (_computer.AktiveRunde) {
-                    _computer.AnzahlAufgedecktePaare++;
-                }
-
-                ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde
-                //Spiel Beenden wenn alle Karten paare gefunden sind
-                if (_mensch.AnzahlGefundenerPaare + _computer.AnzahlGefundenerPaare == 8) {
-                    SpielBeenden();
-                    return;
-                }
-
-                //Wechseln wer an der Reihe ist
-                if (_mensch.AktiveRunde) {
-                    _mensch.AktiveRunde = false;
-                    _computer.AktiveRunde = true;
-                } else {
-                    _mensch.AktiveRunde = true;
-                    _computer.AktiveRunde = false;
-                }
-
-                //Offene Karten reseten
-                spieler.OffeneKarten = new Tuple<KnownCard, KnownCard>(
-                        new KnownCard("", 0, 0), new KnownCard("", 0, 0));
-            }
-
-            //Computer entscheidung welche Buttons gedrückt werden
-            if (_computer.AktiveRunde) {
-                _computer.Karteanschauen(ref _buttons, card);
-
-            }
+            await ButtonEvent(card);
         }//Button 4
 
         private async void Button_Click_5(object sender, RoutedEventArgs e) {
             KnownCard card = new KnownCard(tBox_Button5.Text, 2, 1);//Karte des Buttons
             tBox_Button5.Visibility = Visibility.Visible;
-            Spieler spieler;
-
-            //Setze fest welcher Spieler an der Reihe ist
-            if (_mensch.AktiveRunde) {
-                spieler = _mensch;
-            } else {
-                spieler = _computer;
-            }
-
-            //Karte ins Gedächnis Speichern
-            _mensch.Gedaechtnis(card);
-            _computer.Gedaechtnis(card);
-
-            if (spieler.OffeneKartenHandler(card)) {//Funktonsaufruf zum umgang mit aufgedeckten Karten
-
-                //Kartenvergleichen
-                if (await KartenVergleich(spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2)) {
-
-                    spieler.AnzahlGefundenerPaare++;
-
-                    //Punkte für richtiges paar für Mensch 
-                    if (_mensch.AktiveRunde) {
-                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
-                        _mensch.Score += newscore;
-                        tBoxPunkte.Text = _mensch.Score.ToString();
-                    } else {
-
-                        //Punkte für richtiges paar für Computer
-                        _computer.AnzahlAufgedecktePaare++;
-                        _computer.AnzahlRichtigerPaare++;
-                    }
-
-                    //Richtiges Kartenpaar vom Gedächnis und vom Spielfeld entfernen
-                    GedaechnisLoeschen(_mensch, _computer, spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2);
-                    ButtonDeaktivieren(spieler);
-
-                    //Wenn Karten paar nicht korrekt, dann zähler computer erhöhen
-                } else if (_computer.AktiveRunde) {
-                    _computer.AnzahlAufgedecktePaare++;
-                }
-
-                ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde
-                //Spiel Beenden wenn alle Karten paare gefunden sind
-                if (_mensch.AnzahlGefundenerPaare + _computer.AnzahlGefundenerPaare == 8) {
-                    SpielBeenden();
-                    return;
-                }
-
-                //Wechseln wer an der Reihe ist
-                if (_mensch.AktiveRunde) {
-                    _mensch.AktiveRunde = false;
-                    _computer.AktiveRunde = true;
-                } else {
-                    _mensch.AktiveRunde = true;
-                    _computer.AktiveRunde = false;
-                }
-
-                //Offene Karten reseten
-                spieler.OffeneKarten = new Tuple<KnownCard, KnownCard>(
-                        new KnownCard("", 0, 0), new KnownCard("", 0, 0));
-            }
-
-            //Computer entscheidung welche Buttons gedrückt werden
-            if (_computer.AktiveRunde) {
-                _computer.Karteanschauen(ref _buttons, card);
-
-            }
+            await ButtonEvent(card);
         }//Button 5
 
         private async void Button_Click_6(object sender, RoutedEventArgs e) {
             KnownCard card = new KnownCard(tBox_Button6.Text, 2, 2);//Karte des Buttons
             tBox_Button6.Visibility = Visibility.Visible;
-            Spieler spieler;
-
-            //Setze fest welcher Spieler an der Reihe ist
-            if (_mensch.AktiveRunde) {
-                spieler = _mensch;
-            } else {
-                spieler = _computer;
-            }
-
-            //Karte ins Gedächnis Speichern
-            _mensch.Gedaechtnis(card);
-            _computer.Gedaechtnis(card);
-
-            if (spieler.OffeneKartenHandler(card)) {//Funktonsaufruf zum umgang mit aufgedeckten Karten
-
-                //Kartenvergleichen
-                if (await KartenVergleich(spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2)) {
-
-                    spieler.AnzahlGefundenerPaare++;
-
-                    //Punkte für richtiges paar für Mensch 
-                    if (_mensch.AktiveRunde) {
-                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
-                        _mensch.Score += newscore;
-                        tBoxPunkte.Text = _mensch.Score.ToString();
-                    } else {
-
-                        //Punkte für richtiges paar für Computer
-                        _computer.AnzahlAufgedecktePaare++;
-                        _computer.AnzahlRichtigerPaare++;
-                    }
-
-                    //Richtiges Kartenpaar vom Gedächnis und vom Spielfeld entfernen
-                    GedaechnisLoeschen(_mensch, _computer, spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2);
-                    ButtonDeaktivieren(spieler);
-
-                    //Wenn Karten paar nicht korrekt, dann zähler computer erhöhen
-                } else if (_computer.AktiveRunde) {
-                    _computer.AnzahlAufgedecktePaare++;
-                }
-
-                ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde
-                //Spiel Beenden wenn alle Karten paare gefunden sind
-                if (_mensch.AnzahlGefundenerPaare + _computer.AnzahlGefundenerPaare == 8) {
-                    SpielBeenden();
-                    return;
-                }
-
-                //Wechseln wer an der Reihe ist
-                if (_mensch.AktiveRunde) {
-                    _mensch.AktiveRunde = false;
-                    _computer.AktiveRunde = true;
-                } else {
-                    _mensch.AktiveRunde = true;
-                    _computer.AktiveRunde = false;
-                }
-
-                //Offene Karten reseten
-                spieler.OffeneKarten = new Tuple<KnownCard, KnownCard>(
-                        new KnownCard("", 0, 0), new KnownCard("", 0, 0));
-            }
-
-            //Computer entscheidung welche Buttons gedrückt werden
-            if (_computer.AktiveRunde) {
-                _computer.Karteanschauen(ref _buttons, card);
-
-            }
+            await ButtonEvent(card);
         }//Button 6
 
         private async void Button_Click_7(object sender, RoutedEventArgs e) {
             KnownCard card = new KnownCard(tBox_Button7.Text, 2, 3);//Karte des Buttons
             tBox_Button7.Visibility = Visibility.Visible;
-            Spieler spieler;
-
-            //Setze fest welcher Spieler an der Reihe ist
-            if (_mensch.AktiveRunde) {
-                spieler = _mensch;
-            } else {
-                spieler = _computer;
-            }
-
-            //Karte ins Gedächnis Speichern
-            _mensch.Gedaechtnis(card);
-            _computer.Gedaechtnis(card);
-
-            if (spieler.OffeneKartenHandler(card)) {//Funktonsaufruf zum umgang mit aufgedeckten Karten
-
-                //Kartenvergleichen
-                if (await KartenVergleich(spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2)) {
-
-                    spieler.AnzahlGefundenerPaare++;
-
-                    //Punkte für richtiges paar für Mensch 
-                    if (_mensch.AktiveRunde) {
-                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
-                        _mensch.Score += newscore;
-                        tBoxPunkte.Text = _mensch.Score.ToString();
-                    } else {
-
-                        //Punkte für richtiges paar für Computer
-                        _computer.AnzahlAufgedecktePaare++;
-                        _computer.AnzahlRichtigerPaare++;
-                    }
-
-                    //Richtiges Kartenpaar vom Gedächnis und vom Spielfeld entfernen
-                    GedaechnisLoeschen(_mensch, _computer, spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2);
-                    ButtonDeaktivieren(spieler);
-
-                    //Wenn Karten paar nicht korrekt, dann zähler computer erhöhen
-                } else if (_computer.AktiveRunde) {
-                    _computer.AnzahlAufgedecktePaare++;
-                }
-
-                ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde
-                //Spiel Beenden wenn alle Karten paare gefunden sind
-                if (_mensch.AnzahlGefundenerPaare + _computer.AnzahlGefundenerPaare == 8) {
-                    SpielBeenden();
-                    return;
-                }
-
-                //Wechseln wer an der Reihe ist
-                if (_mensch.AktiveRunde) {
-                    _mensch.AktiveRunde = false;
-                    _computer.AktiveRunde = true;
-                } else {
-                    _mensch.AktiveRunde = true;
-                    _computer.AktiveRunde = false;
-                }
-
-                //Offene Karten reseten
-                spieler.OffeneKarten = new Tuple<KnownCard, KnownCard>(
-                        new KnownCard("", 0, 0), new KnownCard("", 0, 0));
-            }
-
-            //Computer entscheidung welche Buttons gedrückt werden
-            if (_computer.AktiveRunde) {
-                _computer.Karteanschauen(ref _buttons, card);
-
-            }
+            await ButtonEvent(card);
         }//Button 7
 
         private async void Button_Click_8(object sender, RoutedEventArgs e) {
             KnownCard card = new KnownCard(tBox_Button8.Text, 2, 4);//Karte des Buttons
             tBox_Button8.Visibility = Visibility.Visible;
-            Spieler spieler;
-
-            //Setze fest welcher Spieler an der Reihe ist
-            if (_mensch.AktiveRunde) {
-                spieler = _mensch;
-            } else {
-                spieler = _computer;
-            }
-
-            //Karte ins Gedächnis Speichern
-            _mensch.Gedaechtnis(card);
-            _computer.Gedaechtnis(card);
-
-            if (spieler.OffeneKartenHandler(card)) {//Funktonsaufruf zum umgang mit aufgedeckten Karten
-
-                //Kartenvergleichen
-                if (await KartenVergleich(spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2)) {
-
-                    spieler.AnzahlGefundenerPaare++;
-
-                    //Punkte für richtiges paar für Mensch 
-                    if (_mensch.AktiveRunde) {
-                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
-                        _mensch.Score += newscore;
-                        tBoxPunkte.Text = _mensch.Score.ToString();
-                    } else {
-
-                        //Punkte für richtiges paar für Computer
-                        _computer.AnzahlAufgedecktePaare++;
-                        _computer.AnzahlRichtigerPaare++;
-                    }
-
-                    //Richtiges Kartenpaar vom Gedächnis und vom Spielfeld entfernen
-                    GedaechnisLoeschen(_mensch, _computer, spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2);
-                    ButtonDeaktivieren(spieler);
-
-                    //Wenn Karten paar nicht korrekt, dann zähler computer erhöhen
-                } else if (_computer.AktiveRunde) {
-                    _computer.AnzahlAufgedecktePaare++;
-                }
-
-                ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde
-                //Spiel Beenden wenn alle Karten paare gefunden sind
-                if (_mensch.AnzahlGefundenerPaare + _computer.AnzahlGefundenerPaare == 8) {
-                    SpielBeenden();
-                    return;
-                }
-
-                //Wechseln wer an der Reihe ist
-                if (_mensch.AktiveRunde) {
-                    _mensch.AktiveRunde = false;
-                    _computer.AktiveRunde = true;
-                } else {
-                    _mensch.AktiveRunde = true;
-                    _computer.AktiveRunde = false;
-                }
-
-                //Offene Karten reseten
-                spieler.OffeneKarten = new Tuple<KnownCard, KnownCard>(
-                        new KnownCard("", 0, 0), new KnownCard("", 0, 0));
-            }
-
-            //Computer entscheidung welche Buttons gedrückt werden
-            if (_computer.AktiveRunde) {
-                _computer.Karteanschauen(ref _buttons, card);
-
-            }
+            await ButtonEvent(card);
         }//Button 8
 
         private async void Button_Click_9(object sender, RoutedEventArgs e) {
             KnownCard card = new KnownCard(tBox_Button9.Text, 3, 1);//Karte des Buttons
             tBox_Button9.Visibility = Visibility.Visible;
-            Spieler spieler;
-
-            //Setze fest welcher Spieler an der Reihe ist
-            if (_mensch.AktiveRunde) {
-                spieler = _mensch;
-            } else {
-                spieler = _computer;
-            }
-
-            //Karte ins Gedächnis Speichern
-            _mensch.Gedaechtnis(card);
-            _computer.Gedaechtnis(card);
-
-            if (spieler.OffeneKartenHandler(card)) {//Funktonsaufruf zum umgang mit aufgedeckten Karten
-
-                //Kartenvergleichen
-                if (await KartenVergleich(spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2)) {
-
-                    spieler.AnzahlGefundenerPaare++;
-
-                    //Punkte für richtiges paar für Mensch 
-                    if (_mensch.AktiveRunde) {
-                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
-                        _mensch.Score += newscore;
-                        tBoxPunkte.Text = _mensch.Score.ToString();
-                    } else {
-
-                        //Punkte für richtiges paar für Computer
-                        _computer.AnzahlAufgedecktePaare++;
-                        _computer.AnzahlRichtigerPaare++;
-                    }
-
-                    //Richtiges Kartenpaar vom Gedächnis und vom Spielfeld entfernen
-                    GedaechnisLoeschen(_mensch, _computer, spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2);
-                    ButtonDeaktivieren(spieler);
-
-                    //Wenn Karten paar nicht korrekt, dann zähler computer erhöhen
-                } else if (_computer.AktiveRunde) {
-                    _computer.AnzahlAufgedecktePaare++;
-                }
-
-                ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde
-                //Spiel Beenden wenn alle Karten paare gefunden sind
-                if (_mensch.AnzahlGefundenerPaare + _computer.AnzahlGefundenerPaare == 8) {
-                    SpielBeenden();
-                    return;
-                }
-
-                //Wechseln wer an der Reihe ist
-                if (_mensch.AktiveRunde) {
-                    _mensch.AktiveRunde = false;
-                    _computer.AktiveRunde = true;
-                } else {
-                    _mensch.AktiveRunde = true;
-                    _computer.AktiveRunde = false;
-                }
-
-                //Offene Karten reseten
-                spieler.OffeneKarten = new Tuple<KnownCard, KnownCard>(
-                        new KnownCard("", 0, 0), new KnownCard("", 0, 0));
-            }
-
-            //Computer entscheidung welche Buttons gedrückt werden
-            if (_computer.AktiveRunde) {
-                _computer.Karteanschauen(ref _buttons, card);
-
-            }
+            await ButtonEvent(card);
         }//Button 9
 
         private async void Button_Click_10(object sender, RoutedEventArgs e) {
             KnownCard card = new KnownCard(tBox_Button10.Text, 3, 2);//Karte des Buttons
             tBox_Button10.Visibility = Visibility.Visible;
-            Spieler spieler;
-
-            //Setze fest welcher Spieler an der Reihe ist
-            if (_mensch.AktiveRunde) {
-                spieler = _mensch;
-            } else {
-                spieler = _computer;
-            }
-
-            //Karte ins Gedächnis Speichern
-            _mensch.Gedaechtnis(card);
-            _computer.Gedaechtnis(card);
-
-            if (spieler.OffeneKartenHandler(card)) {//Funktonsaufruf zum umgang mit aufgedeckten Karten
-
-                //Kartenvergleichen
-                if (await KartenVergleich(spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2)) {
-
-                    spieler.AnzahlGefundenerPaare++;
-
-                    //Punkte für richtiges paar für Mensch 
-                    if (_mensch.AktiveRunde) {
-                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
-                        _mensch.Score += newscore;
-                        tBoxPunkte.Text = _mensch.Score.ToString();
-                    } else {
-
-                        //Punkte für richtiges paar für Computer
-                        _computer.AnzahlAufgedecktePaare++;
-                        _computer.AnzahlRichtigerPaare++;
-                    }
-
-                    //Richtiges Kartenpaar vom Gedächnis und vom Spielfeld entfernen
-                    GedaechnisLoeschen(_mensch, _computer, spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2);
-                    ButtonDeaktivieren(spieler);
-
-                    //Wenn Karten paar nicht korrekt, dann zähler computer erhöhen
-                } else if (_computer.AktiveRunde) {
-                    _computer.AnzahlAufgedecktePaare++;
-                }
-
-                ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde
-                //Spiel Beenden wenn alle Karten paare gefunden sind
-                if (_mensch.AnzahlGefundenerPaare + _computer.AnzahlGefundenerPaare == 8) {
-                    SpielBeenden();
-                    return;
-                }
-
-                //Wechseln wer an der Reihe ist
-                if (_mensch.AktiveRunde) {
-                    _mensch.AktiveRunde = false;
-                    _computer.AktiveRunde = true;
-                } else {
-                    _mensch.AktiveRunde = true;
-                    _computer.AktiveRunde = false;
-                }
-
-                //Offene Karten reseten
-                spieler.OffeneKarten = new Tuple<KnownCard, KnownCard>(
-                        new KnownCard("", 0, 0), new KnownCard("", 0, 0));
-            }
-
-            //Computer entscheidung welche Buttons gedrückt werden
-            if (_computer.AktiveRunde) {
-                _computer.Karteanschauen(ref _buttons, card);
-
-            }
+            await ButtonEvent(card);
         }//Button 10
 
         private async void Button_Click_11(object sender, RoutedEventArgs e) {
             KnownCard card = new KnownCard(tBox_Button11.Text, 3, 3);//Karte des Buttons
             tBox_Button11.Visibility = Visibility.Visible;
-            Spieler spieler;
-
-            //Setze fest welcher Spieler an der Reihe ist
-            if (_mensch.AktiveRunde) {
-                spieler = _mensch;
-            } else {
-                spieler = _computer;
-            }
-
-            //Karte ins Gedächnis Speichern
-            _mensch.Gedaechtnis(card);
-            _computer.Gedaechtnis(card);
-
-            if (spieler.OffeneKartenHandler(card)) {//Funktonsaufruf zum umgang mit aufgedeckten Karten
-
-                //Kartenvergleichen
-                if (await KartenVergleich(spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2)) {
-
-                    spieler.AnzahlGefundenerPaare++;
-
-                    //Punkte für richtiges paar für Mensch 
-                    if (_mensch.AktiveRunde) {
-                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
-                        _mensch.Score += newscore;
-                        tBoxPunkte.Text = _mensch.Score.ToString();
-                    } else {
-
-                        //Punkte für richtiges paar für Computer
-                        _computer.AnzahlAufgedecktePaare++;
-                        _computer.AnzahlRichtigerPaare++;
-                    }
-
-                    //Richtiges Kartenpaar vom Gedächnis und vom Spielfeld entfernen
-                    GedaechnisLoeschen(_mensch, _computer, spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2);
-                    ButtonDeaktivieren(spieler);
-
-                    //Wenn Karten paar nicht korrekt, dann zähler computer erhöhen
-                } else if (_computer.AktiveRunde) {
-                    _computer.AnzahlAufgedecktePaare++;
-                }
-
-                ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde
-                //Spiel Beenden wenn alle Karten paare gefunden sind
-                if (_mensch.AnzahlGefundenerPaare + _computer.AnzahlGefundenerPaare == 8) {
-                    SpielBeenden();
-                    return;
-                }
-
-                //Wechseln wer an der Reihe ist
-                if (_mensch.AktiveRunde) {
-                    _mensch.AktiveRunde = false;
-                    _computer.AktiveRunde = true;
-                } else {
-                    _mensch.AktiveRunde = true;
-                    _computer.AktiveRunde = false;
-                }
-
-                //Offene Karten reseten
-                spieler.OffeneKarten = new Tuple<KnownCard, KnownCard>(
-                        new KnownCard("", 0, 0), new KnownCard("", 0, 0));
-            }
-
-            //Computer entscheidung welche Buttons gedrückt werden
-            if (_computer.AktiveRunde) {
-                _computer.Karteanschauen(ref _buttons, card);
-
-            }
+            await ButtonEvent(card);
         }//Button 11
 
         private async void Button_Click_12(object sender, RoutedEventArgs e) {
             KnownCard card = new KnownCard(tBox_Button12.Text, 3, 4);//Karte des Buttons
             tBox_Button12.Visibility = Visibility.Visible;
-            Spieler spieler;
-
-            //Setze fest welcher Spieler an der Reihe ist
-            if (_mensch.AktiveRunde) {
-                spieler = _mensch;
-            } else {
-                spieler = _computer;
-            }
-
-            //Karte ins Gedächnis Speichern
-            _mensch.Gedaechtnis(card);
-            _computer.Gedaechtnis(card);
-
-            if (spieler.OffeneKartenHandler(card)) {//Funktonsaufruf zum umgang mit aufgedeckten Karten
-
-                //Kartenvergleichen
-                if (await KartenVergleich(spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2)) {
-
-                    spieler.AnzahlGefundenerPaare++;
-
-                    //Punkte für richtiges paar für Mensch 
-                    if (_mensch.AktiveRunde) {
-                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
-                        _mensch.Score += newscore;
-                        tBoxPunkte.Text = _mensch.Score.ToString();
-                    } else {
-
-                        //Punkte für richtiges paar für Computer
-                        _computer.AnzahlAufgedecktePaare++;
-                        _computer.AnzahlRichtigerPaare++;
-                    }
-
-                    //Richtiges Kartenpaar vom Gedächnis und vom Spielfeld entfernen
-                    GedaechnisLoeschen(_mensch, _computer, spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2);
-                    ButtonDeaktivieren(spieler);
-
-                    //Wenn Karten paar nicht korrekt, dann zähler computer erhöhen
-                } else if (_computer.AktiveRunde) {
-                    _computer.AnzahlAufgedecktePaare++;
-                }
-
-                ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde
-                //Spiel Beenden wenn alle Karten paare gefunden sind
-                if (_mensch.AnzahlGefundenerPaare + _computer.AnzahlGefundenerPaare == 8) {
-                    SpielBeenden();
-                    return;
-                }
-
-                //Wechseln wer an der Reihe ist
-                if (_mensch.AktiveRunde) {
-                    _mensch.AktiveRunde = false;
-                    _computer.AktiveRunde = true;
-                } else {
-                    _mensch.AktiveRunde = true;
-                    _computer.AktiveRunde = false;
-                }
-
-                //Offene Karten reseten
-                spieler.OffeneKarten = new Tuple<KnownCard, KnownCard>(
-                        new KnownCard("", 0, 0), new KnownCard("", 0, 0));
-            }
-
-            //Computer entscheidung welche Buttons gedrückt werden
-            if (_computer.AktiveRunde) {
-                _computer.Karteanschauen(ref _buttons, card);
-
-            }
+            await ButtonEvent(card);
         }//Button 12
 
         private async void Button_Click_13(object sender, RoutedEventArgs e) {
             KnownCard card = new KnownCard(tBox_Button13.Text, 4, 1);//Karte des Buttons
             tBox_Button13.Visibility = Visibility.Visible;
-            Spieler spieler;
-
-            //Setze fest welcher Spieler an der Reihe ist
-            if (_mensch.AktiveRunde) {
-                spieler = _mensch;
-            } else {
-                spieler = _computer;
-            }
-
-            //Karte ins Gedächnis Speichern
-            _mensch.Gedaechtnis(card);
-            _computer.Gedaechtnis(card);
-
-            if (spieler.OffeneKartenHandler(card)) {//Funktonsaufruf zum umgang mit aufgedeckten Karten
-
-                //Kartenvergleichen
-                if (await KartenVergleich(spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2)) {
-
-                    spieler.AnzahlGefundenerPaare++;
-
-                    //Punkte für richtiges paar für Mensch 
-                    if (_mensch.AktiveRunde) {
-                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
-                        _mensch.Score += newscore;
-                        tBoxPunkte.Text = _mensch.Score.ToString();
-                    } else {
-
-                        //Punkte für richtiges paar für Computer
-                        _computer.AnzahlAufgedecktePaare++;
-                        _computer.AnzahlRichtigerPaare++;
-                    }
-
-                    //Richtiges Kartenpaar vom Gedächnis und vom Spielfeld entfernen
-                    GedaechnisLoeschen(_mensch, _computer, spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2);
-                    ButtonDeaktivieren(spieler);
-
-                    //Wenn Karten paar nicht korrekt, dann zähler computer erhöhen
-                } else if (_computer.AktiveRunde) {
-                    _computer.AnzahlAufgedecktePaare++;
-                }
-
-                ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde
-                //Spiel Beenden wenn alle Karten paare gefunden sind
-                if (_mensch.AnzahlGefundenerPaare + _computer.AnzahlGefundenerPaare == 8) {
-                    SpielBeenden();
-                    return;
-                }
-
-                //Wechseln wer an der Reihe ist
-                if (_mensch.AktiveRunde) {
-                    _mensch.AktiveRunde = false;
-                    _computer.AktiveRunde = true;
-                } else {
-                    _mensch.AktiveRunde = true;
-                    _computer.AktiveRunde = false;
-                }
-
-                //Offene Karten reseten
-                spieler.OffeneKarten = new Tuple<KnownCard, KnownCard>(
-                        new KnownCard("", 0, 0), new KnownCard("", 0, 0));
-            }
-
-            //Computer entscheidung welche Buttons gedrückt werden
-            if (_computer.AktiveRunde) {
-                _computer.Karteanschauen(ref _buttons, card);
-
-            }
+            await ButtonEvent(card);
         }//Button 13
 
         private async void Button_Click_14(object sender, RoutedEventArgs e) {
             KnownCard card = new KnownCard(tBox_Button14.Text, 4, 2);//Karte des Buttons
             tBox_Button14.Visibility = Visibility.Visible;
-            Spieler spieler;
-
-            //Setze fest welcher Spieler an der Reihe ist
-            if (_mensch.AktiveRunde) {
-                spieler = _mensch;
-            } else {
-                spieler = _computer;
-            }
-
-            //Karte ins Gedächnis Speichern
-            _mensch.Gedaechtnis(card);
-            _computer.Gedaechtnis(card);
-
-            if (spieler.OffeneKartenHandler(card)) {//Funktonsaufruf zum umgang mit aufgedeckten Karten
-
-                //Kartenvergleichen
-                if (await KartenVergleich(spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2)) {
-
-                    spieler.AnzahlGefundenerPaare++;
-
-                    //Punkte für richtiges paar für Mensch 
-                    if (_mensch.AktiveRunde) {
-                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
-                        _mensch.Score += newscore;
-                        tBoxPunkte.Text = _mensch.Score.ToString();
-                    } else {
-
-                        //Punkte für richtiges paar für Computer
-                        _computer.AnzahlAufgedecktePaare++;
-                        _computer.AnzahlRichtigerPaare++;
-                    }
-
-                    //Richtiges Kartenpaar vom Gedächnis und vom Spielfeld entfernen
-                    GedaechnisLoeschen(_mensch, _computer, spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2);
-                    ButtonDeaktivieren(spieler);
-
-                    //Wenn Karten paar nicht korrekt, dann zähler computer erhöhen
-                } else if (_computer.AktiveRunde) {
-                    _computer.AnzahlAufgedecktePaare++;
-                }
-
-                ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde
-                //Spiel Beenden wenn alle Karten paare gefunden sind
-                if (_mensch.AnzahlGefundenerPaare + _computer.AnzahlGefundenerPaare == 8) {
-                    SpielBeenden();
-                    return;
-                }
-
-                //Wechseln wer an der Reihe ist
-                if (_mensch.AktiveRunde) {
-                    _mensch.AktiveRunde = false;
-                    _computer.AktiveRunde = true;
-                } else {
-                    _mensch.AktiveRunde = true;
-                    _computer.AktiveRunde = false;
-                }
-
-                //Offene Karten reseten
-                spieler.OffeneKarten = new Tuple<KnownCard, KnownCard>(
-                        new KnownCard("", 0, 0), new KnownCard("", 0, 0));
-            }
-
-            //Computer entscheidung welche Buttons gedrückt werden
-            if (_computer.AktiveRunde) {
-                _computer.Karteanschauen(ref _buttons, card);
-
-            }
+            await ButtonEvent(card);
         }//Button 14
 
         private async void Button_Click_15(object sender, RoutedEventArgs e) {
             KnownCard card = new KnownCard(tBox_Button15.Text, 4, 3);//Karte des Buttons
             tBox_Button15.Visibility = Visibility.Visible;
-            Spieler spieler;
-
-            //Setze fest welcher Spieler an der Reihe ist
-            if (_mensch.AktiveRunde) {
-                spieler = _mensch;
-            } else {
-                spieler = _computer;
-            }
-
-            //Karte ins Gedächnis Speichern
-            _mensch.Gedaechtnis(card);
-            _computer.Gedaechtnis(card);
-
-            if (spieler.OffeneKartenHandler(card)) {//Funktonsaufruf zum umgang mit aufgedeckten Karten
-
-                //Kartenvergleichen
-                if (await KartenVergleich(spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2)) {
-
-                    spieler.AnzahlGefundenerPaare++;
-
-                    //Punkte für richtiges paar für Mensch 
-                    if (_mensch.AktiveRunde) {
-                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
-                        _mensch.Score += newscore;
-                        tBoxPunkte.Text = _mensch.Score.ToString();
-                    } else {
-
-                        //Punkte für richtiges paar für Computer
-                        _computer.AnzahlAufgedecktePaare++;
-                        _computer.AnzahlRichtigerPaare++;
-                    }
-
-                    //Richtiges Kartenpaar vom Gedächnis und vom Spielfeld entfernen
-                    GedaechnisLoeschen(_mensch, _computer, spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2);
-                    ButtonDeaktivieren(spieler);
-
-                    //Wenn Karten paar nicht korrekt, dann zähler computer erhöhen
-                } else if (_computer.AktiveRunde) {
-                    _computer.AnzahlAufgedecktePaare++;
-                }
-
-                ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde
-                //Spiel Beenden wenn alle Karten paare gefunden sind
-                if (_mensch.AnzahlGefundenerPaare + _computer.AnzahlGefundenerPaare == 8) {
-                    SpielBeenden();
-                    return;
-                }
-
-                //Wechseln wer an der Reihe ist
-                if (_mensch.AktiveRunde) {
-                    _mensch.AktiveRunde = false;
-                    _computer.AktiveRunde = true;
-                } else {
-                    _mensch.AktiveRunde = true;
-                    _computer.AktiveRunde = false;
-                }
-
-                //Offene Karten reseten
-                spieler.OffeneKarten = new Tuple<KnownCard, KnownCard>(
-                        new KnownCard("", 0, 0), new KnownCard("", 0, 0));
-            }
-
-            //Computer entscheidung welche Buttons gedrückt werden
-            if (_computer.AktiveRunde) {
-                _computer.Karteanschauen(ref _buttons, card);
-
-            }
+            await ButtonEvent(card);
         }//Button 15
 
         private async void Button_Click_16(object sender, RoutedEventArgs e) {
             KnownCard card = new KnownCard(tBox_Button16.Text, 4, 4);//Karte des Buttons
             tBox_Button16.Visibility = Visibility.Visible;
-            Spieler spieler;
-
-            //Setze fest welcher Spieler an der Reihe ist
-            if (_mensch.AktiveRunde) {
-                spieler = _mensch;
-            } else {
-                spieler = _computer;
-            }
-
-            //Karte ins Gedächnis Speichern
-            _mensch.Gedaechtnis(card);
-            _computer.Gedaechtnis(card);
-
-            if (spieler.OffeneKartenHandler(card)) {//Funktonsaufruf zum umgang mit aufgedeckten Karten
-
-                //Kartenvergleichen
-                if (await KartenVergleich(spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2)) {
-
-                    spieler.AnzahlGefundenerPaare++;
-
-                    //Punkte für richtiges paar für Mensch 
-                    if (_mensch.AktiveRunde) {
-                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000;
-                        _mensch.Score += newscore;
-                        tBoxPunkte.Text = _mensch.Score.ToString();
-                    } else {
-
-                        //Punkte für richtiges paar für Computer
-                        _computer.AnzahlAufgedecktePaare++;
-                        _computer.AnzahlRichtigerPaare++;
-                    }
-
-                    //Richtiges Kartenpaar vom Gedächnis und vom Spielfeld entfernen
-                    GedaechnisLoeschen(_mensch, _computer, spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2);
-                    ButtonDeaktivieren(spieler);
-
-                    //Wenn Karten paar nicht korrekt, dann zähler computer erhöhen
-                } else if (_computer.AktiveRunde) {
-                    _computer.AnzahlAufgedecktePaare++;
-                }
-
-                ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde
-                //Spiel Beenden wenn alle Karten paare gefunden sind
-                if (_mensch.AnzahlGefundenerPaare + _computer.AnzahlGefundenerPaare == 8) {
-                    SpielBeenden();
-                    return;
-                }
-
-                //Wechseln wer an der Reihe ist
-                if (_mensch.AktiveRunde) {
-                    _mensch.AktiveRunde = false;
-                    _computer.AktiveRunde = true;
-                } else {
-                    _mensch.AktiveRunde = true;
-                    _computer.AktiveRunde = false;
-                }
-
-                //Offene Karten reseten
-                spieler.OffeneKarten = new Tuple<KnownCard, KnownCard>(
-                        new KnownCard("", 0, 0), new KnownCard("", 0, 0));
-            }
-
-            //Computer entscheidung welche Buttons gedrückt werden
-            if (_computer.AktiveRunde) {
-                _computer.Karteanschauen(ref _buttons, card);
-
-            }
+            await ButtonEvent(card);
         }//Button 16
 
     }//MainWondow class
