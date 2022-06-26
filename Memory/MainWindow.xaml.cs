@@ -88,8 +88,6 @@ namespace Memory {
             ButtonContentShow(card);
             Spieler spieler;
 
-            
-
             //Setze fest welcher Spieler an der Reihe ist
             if (_mensch.AktiveRunde) {
                 spieler = _mensch;
