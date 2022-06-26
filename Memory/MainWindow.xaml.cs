@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Serilog;
 
 namespace Memory {
     /// <summary>
@@ -88,6 +87,8 @@ namespace Memory {
         private async Task ButtonEvent(KnownCard card) {
             ButtonContentShow(card);
             Spieler spieler;
+
+            
 
             //Setze fest welcher Spieler an der Reihe ist
             if (_mensch.AktiveRunde) {
@@ -472,6 +473,7 @@ namespace Memory {
                     }
                     break;
             }
+
         }
 
         private void ButtonContentShow(KnownCard card) {
