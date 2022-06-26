@@ -68,9 +68,9 @@ namespace Memory {
         /// <summary>
         /// Zufällige Karte auswählen
         /// </summary>
-        /// <param name="buttons"></param>
+        /// <param name="spielFeld"></param>
         /// <returns></returns>
-        public abstract Button Random(List<Button> buttons);
+        public abstract KnownCard Random(SpielFeld spielFeld);
 
         /// <summary>
         /// Handled die Offenen Karten und Zeit des aktuell Spielenden Spielers
