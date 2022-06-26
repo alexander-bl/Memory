@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 /*
@@ -122,13 +123,17 @@ namespace Memory {
             }
         }
 
+        public async void Event(Func<KnownCard, Task> ButtonEvent, KnownCard card) {
+            await ButtonEvent(card);
+        }
+
         /// <summary>
         /// Auswahl welche Karte angeschaut wird
         /// </summary>
         /// <param name="buttons"></param>
-        public void Karteanschauen(ref Button[] buttons, KnownCard card) {
+        public async void Karteanschauen(ref Button[] buttons, KnownCard card) {
+            MainWindow mainWindow = new MainWindow();
             GeseheneKarten.Sort((s1, s2) => s1.Karte.CompareTo(s2.Karte));//Sortiere Karten Liste
-
 
             for (int i = 0; i < GeseheneKarten.Count - 1; i++) {
 
@@ -143,6 +148,7 @@ namespace Memory {
                             case 1:
                                 switch (GeseheneKarten[i].Spalte) {
                                     case 1:
+                                        await mainWindow.ButtonEvent(GeseheneKarten[i]);
                                         buttons[0].RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                                         break;
                                     case 2:
