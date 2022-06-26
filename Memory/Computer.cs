@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -96,14 +97,23 @@ namespace Memory {
         /// <param name="buttons"></param>
         /// <returns></returns>
         public override KnownCard Random(SpielFeld spielFeld) {
+            //Log.Logger = new LoggerConfiguration()
+                            //.WriteTo.File(@"C:\Temp\Log.txt", outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+                            //.CreateLogger();
             int zeile;
             int spalte;
             KnownCard card;
             do {
                 Random rnd = new Random();
+                Log.Warning("\n");
+                Log.Error(rnd.ToString());
                 zeile = rnd.Next(0, 3);
+                Log.Error(zeile.ToString());
                 spalte = rnd.Next(0, 3);
+                Log.Error(spalte.ToString());
                 card = new KnownCard(spielFeld.Feld[zeile,spalte], zeile+1, spalte+1);//Auswahl Zufälliger Karte
+                Log.Error(card.ToString());
+                Log.Warning("\n");
             } while (spielFeld.Feld[zeile,spalte] == "");//Wenn ausgesuchte Karte bereits Deaktiviert ist nehme anderen zufällige Karte
 
             return card;

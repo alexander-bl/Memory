@@ -38,7 +38,7 @@ namespace Memory {
                     Log.Warning("stelle 1, " + _computer.GeseheneKarten.Count);
                     //Alle Karten im Gedächniss durchschauen
                     if (_computer.GeseheneKarten[i].Karte == _computer.GeseheneKarten[i + 1].Karte) {
-                        Log.Warning("stelle 2, " + i);
+                        //Log.Warning("stelle 2, " + i);
                         await ButtonEvent(_computer.GeseheneKarten[i]);
                         return;
                     }
@@ -100,9 +100,7 @@ namespace Memory {
             string str = card.Karte.ToString() + ", " + card.Zeile.ToString() + ", " + card.Spalte.ToString() + " # " + spieler.ToString();
             Log.Error(logcounter + str);
 
-            //Karte ins Gedächnis Speichern
-            _mensch.Gedaechtnis(card);
-            _computer.Gedaechtnis(card);
+            
 
             if (spieler.OffeneKartenHandler(card)) {//Funktonsaufruf zum umgang mit aufgedeckten Karten
 
@@ -140,15 +138,12 @@ namespace Memory {
                 }
 
                 //Wechseln wer an der Reihe ist
-                if (_mensch.AktiveRunde) {
-                    _mensch.AktiveRunde = false;
-                    _computer.AktiveRunde = true;
-                } else {
-                    _mensch.AktiveRunde = true;
-                    _computer.AktiveRunde = false;
-                }
-                //_mensch.AktiveRunde = !_mensch.AktiveRunde;
-                //_computer.AktiveRunde = !_mensch.AktiveRunde;
+                _mensch.AktiveRunde = !_mensch.AktiveRunde;
+                _computer.AktiveRunde = !_mensch.AktiveRunde;
+
+                //Karte ins Gedächnis Speichern
+                _mensch.Gedaechtnis(card);
+                _computer.Gedaechtnis(card);
 
                 //Offene Karten reseten
                 spieler.OffeneKarten = new Tuple<KnownCard, KnownCard>(
