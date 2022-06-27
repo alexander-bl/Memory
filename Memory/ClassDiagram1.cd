@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Memory.Computer">
+    <Position X="2.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAQAABAAAAAACAAAAFAAAAAgAAAQAAAQ=</HashCode>
+      <FileName>Computer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Memory.Highscore">
+    <Position X="6.5" Y="1.75" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="Memory.Highscore.Datensatz" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Highscore.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAAQAAAAIAAAAIAAAAAAAEAAAAAAAAQAA=</HashCode>
+      <FileName>Highscore.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Memory.Karten">
+    <Position X="1" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAACABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Karten.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Memory.Mensch">
+    <Position X="5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAggABAAgAAQAAAAAFAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Mensch.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Memory.Spieler">
+    <Position X="3.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAgAAAAEAAAEAAABAAQAAAAAAAEFAAAAAgAIAAAAAA=</HashCode>
+      <FileName>Spieler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Memory.SpielFeld">
+    <Position X="9" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgIAAAAAAAACAAAAAAEAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>SpielFeld.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Memory.MainWindow">
+    <Position X="12" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BhICAYAAAKBBEJAAAKAAIA0EAAABAAACAQIAKAQAQAE=</HashCode>
+      <FileName>MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Memory.Highscore_Fenster">
+    <Position X="10" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Highscore_Fenster.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Struct Name="Memory.KnownCard">
+    <Position X="6.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAhAAAAAAAAA=</HashCode>
+      <FileName>KnownCard.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
