@@ -22,7 +22,7 @@
                 Schwer
             </Label>
         </StackPanel>
-        
+
         <StackPanel Orientation="Horizontal">
             <Label Width="26"></Label>
             <Label Width="128" HorizontalContentAlignment="Center">
@@ -457,6 +457,9 @@
                 x:Name="tBox10Computers"
                 TextAlignment="Center" Height="25">
             </TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Button Content="OK" Width="100" Margin="680,20,0,0" Click="Button_Click_OK" IsDefault="True"/>
         </StackPanel>
 
 

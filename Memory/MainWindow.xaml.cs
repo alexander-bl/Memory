@@ -1,5 +1,5 @@
-﻿using Serilog;
-using System;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,19 +10,14 @@ namespace Memory {
     /// Interaktionslogik für MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-        int logcounter = 0;
         Mensch _mensch = null;
         Computer _computer = null;
         Button[] _buttons = null;
         SpielFeld _spielFeld = null;
         Random _random = null;
+        Highscore.Datensatz[] _datensatz;
         public MainWindow() {
             InitializeComponent();
-
-            Log.Logger = new LoggerConfiguration()
-                            .WriteTo.File(@"C:\Temp\Log.txt", outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
-                            .CreateLogger();
-
             _buttons = new Button[]{Button, Button2, Button3, Button4, Button4, Button5,
                                 Button6, Button7, Button8, Button9, Button10, Button11,
                                 Button12, Button13, Button14, Button15, Button16};
@@ -36,31 +31,25 @@ namespace Memory {
 
                 //Wenn Coumputer noch keine Karte angeschaut hatt entscheidung welche gewählt wird
                 if (_computer.OffeneKarten.Item1.Karte == "") {
-                    Log.Warning("stelle 1, " + _computer.GeseheneKarten.Count);
+
                     //Alle Karten im Gedächniss durchschauen
                     if (_computer.GeseheneKarten[i].Karte == _computer.GeseheneKarten[i + 1].Karte) {
-                        //Log.Warning("stelle 2, " + i);
-                        Log.Warning("stelle 2, " + i);
                         await ButtonEvent(_computer.GeseheneKarten[i]);
                         return;
                     }
 
                 } else {
-                    Log.Warning("stelle 1.5, " + _computer.GeseheneKarten.Count);
                     //Wenn Karte im Gedächnis gleich aktuell gewählte karte, dann überspribge diese
                     if ((_computer.GeseheneKarten[i].Zeile == card.Zeile) && (_computer.GeseheneKarten[i].Spalte == card.Spalte)) {
-                        Log.Warning("stelle 3, " + i);
-                        i++;
+                        continue;
                     }
                     if (_computer.GeseheneKarten[i].Karte == card.Karte) {
-                        Log.Warning("stelle 4, " + i);
                         await ButtonEvent(_computer.GeseheneKarten[i]);
                         return;
                     }
                 }
             }
             KnownCard rndCard = _computer.Random(_spielFeld, _random, card);
-            Log.Warning("stelle 5, ");
             await ButtonEvent(rndCard);
         }
 
@@ -84,7 +73,7 @@ namespace Memory {
         }
 
         private async Task ButtonEvent(KnownCard card) {
-            ButtonContentShow(card);
+            
             Spieler spieler;
 
             //Setze fest welcher Spieler an der Reihe ist
@@ -94,22 +83,60 @@ namespace Memory {
                 spieler = _computer;
             }
 
-            logcounter++;
-            string str = card.Karte.ToString() + ", " + card.Zeile.ToString() + ", " + card.Spalte.ToString() + " # " + spieler.ToString();
-            Log.Error(logcounter + str);
+            //Lasse dritten Button Druck nicht zu
+            if (!(spieler.OffeneKarten.Item2.Karte == "")) {
+                return;
+            }
 
-            
+            ButtonContentShow(card);
 
             if (spieler.OffeneKartenHandler(card)) {//Funktonsaufruf zum umgang mit aufgedeckten Karten
-
+                bool kartenPaarRichtig = false;//Ist Karten paar gleich? 
                 //Kartenvergleichen
                 if (await KartenVergleich(spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2)) {
 
+                    kartenPaarRichtig = true;
                     spieler.AnzahlGefundenerPaare++;
 
                     //Punkte für richtiges paar für Mensch 
                     if (_mensch.AktiveRunde) {
-                        int newscore = (1 / ((int)_mensch.Stopwatch.Elapsed.TotalMilliseconds)) * 1000000;
+                        int zahl = (int)_mensch.Stopwatch.Elapsed.TotalSeconds;
+                        int newscore;
+                        switch (zahl) {
+                            case 0:
+                                newscore = 10;
+                                break;
+                            case 1:
+                                newscore = 9;
+                                break;
+                            case 2:
+                                newscore = 8;
+                                break;
+                            case 3:
+                                newscore = 7;
+                                break;
+                            case 4:
+                                newscore = 6;
+                                break;
+                            case 5:
+                                newscore = 5;
+                                break;
+                            case 6:
+                                newscore = 4;
+                                break;
+                            case 7:
+                                newscore = 3;
+                                break;
+                            case 8:
+                                newscore = 2;
+                                break;
+                            case 9:
+                                newscore = 1;
+                                break;
+                            default:
+                                newscore = 1;
+                                break;
+                        }
                         _mensch.Score += newscore;
                         tBoxPunkte.Text = _mensch.Score.ToString();
                     } else {
@@ -119,8 +146,8 @@ namespace Memory {
                         _computer.AnzahlRichtigerPaare++;
                     }
 
-                    //Richtiges Kartenpaar vom Gedächnis und vom Spielfeld entfernen
-                    GedaechnisLoeschen(_mensch, _computer, spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2);
+                    
+                    
                     ButtonDeaktivieren(spieler);
 
                     //Wenn Karten paar nicht korrekt, dann zähler computer erhöhen
@@ -130,7 +157,7 @@ namespace Memory {
 
                 ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde
                 //Spiel Beenden wenn alle Karten paare gefunden sind
-                if (_mensch.AnzahlGefundenerPaare + _computer.AnzahlGefundenerPaare == 8) {
+                if (_mensch.AnzahlGefundenerPaare == 4 || _computer.AnzahlGefundenerPaare == 5) {
                     SpielBeenden();
                     return;
                 }
@@ -145,6 +172,11 @@ namespace Memory {
                 _mensch.Gedaechtnis(spieler.OffeneKarten.Item2);
                 _computer.Gedaechtnis(spieler.OffeneKarten.Item2);
 
+                //Richtiges Kartenpaar vom Gedächnis und vom Spielfeld entfernen
+                if (kartenPaarRichtig == true) {
+                    GedaechnisLoeschen(_mensch, _computer, spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2);
+                }
+
                 //Offene Karten reseten
                 spieler.OffeneKarten = new Tuple<KnownCard, KnownCard>(
                         new KnownCard("", 0, 0), new KnownCard("", 0, 0));
@@ -157,17 +189,20 @@ namespace Memory {
         }
 
         private void SpielBeenden() {
+            Array.Resize(ref _datensatz, _datensatz.Length + 1);
+            _datensatz[_datensatz.Length] = new Highscore.Datensatz(_mensch.Name, _mensch.Score, (_computer.AnzahlRichtigerPaare / _computer.AnzahlAufgedecktePaare) * 100);
+
             if (_computer.Difficulty == "Normal") {
-                Highscore.WriteToFile(_computer, _mensch);
+                Highscore.WriteToFile(_datensatz);
 
             } else {
-                Highscore.WriteToFileSchwer(_computer, _mensch);
+                Highscore.WriteToFileSchwer(_datensatz);
             }
 
             if (_mensch.AnzahlGefundenerPaare >= _computer.AnzahlGefundenerPaare) {
-                MessageBox.Show("Herzlichen Glückwunsch!\nSie haben das Spiel mit" + _mensch.Score + " Punkten gewonnen!");
+                MessageBox.Show("Herzlichen Glückwunsch!\nSie haben das Spiel mit " + _mensch.Score + " Punkten gewonnen!");
             } else {
-                MessageBox.Show("Schade!\nSie haben das Spiel leider mit" + _mensch.Score + " verloren.");
+                MessageBox.Show("Schade!\nSie haben das Spiel leider mit " + _mensch.Score + " Punkten verloren!");
             }
         }
 
@@ -472,88 +507,6 @@ namespace Memory {
             }
         }
 
-        private void ButtonContentShow(KnownCard card) {
-            //Verstecken des karten paars
-            switch (card.Zeile) {
-                case 1:
-                    switch (card.Spalte) {
-                        case 1:
-                            tBox_Button.Visibility = Visibility.Visible;
-                            break;
-                        case 2:
-                            tBox_Button2.Visibility = Visibility.Visible;
-                            break;
-                        case 3:
-                            tBox_Button3.Visibility = Visibility.Visible;
-                            break;
-                        case 4:
-                            tBox_Button4.Visibility = Visibility.Visible;
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-
-                case 2:
-                    switch (card.Spalte) {
-                        case 1:
-                            tBox_Button5.Visibility = Visibility.Visible;
-                            break;
-                        case 2:
-                            tBox_Button6.Visibility = Visibility.Visible;
-                            break;
-                        case 3:
-                            tBox_Button7.Visibility = Visibility.Visible;
-                            break;
-                        case 4:
-                            tBox_Button8.Visibility = Visibility.Visible;
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-
-                case 3:
-                    switch (card.Spalte) {
-                        case 1:
-                            tBox_Button9.Visibility = Visibility.Visible;
-                            break;
-                        case 2:
-                            tBox_Button10.Visibility = Visibility.Visible;
-                            break;
-                        case 3:
-                            tBox_Button11.Visibility = Visibility.Visible;
-                            break;
-                        case 4:
-                            tBox_Button12.Visibility = Visibility.Visible;
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-
-                case 4:
-                    switch (card.Spalte) {
-                        case 1:
-                            tBox_Button13.Visibility = Visibility.Visible;
-                            break;
-                        case 2:
-                            tBox_Button14.Visibility = Visibility.Visible;
-                            break;
-                        case 3:
-                            tBox_Button15.Visibility = Visibility.Visible;
-                            break;
-                        case 4:
-                            tBox_Button16.Visibility = Visibility.Visible;
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-            }
-
-        }
-
         private void MenuItem_NeuesSpiel_Click(object sender, RoutedEventArgs e) {
             //Neues Dialog Fenster für neues Spiel erstellen Starten
             Neues_Spiel_Fenster neuesSpielFenster = new Neues_Spiel_Fenster();
@@ -574,6 +527,13 @@ namespace Memory {
 
             //Buttons aktivieren
             IsAllButtonsEnabled(true);
+
+            if (_computer.Difficulty == "Normal") {
+                _datensatz = Highscore.ReadFromFile();
+            } else {
+                _datensatz = Highscore.ReadFromFileSchwer();
+            }
+            
 
             tBox_Button.Text = _spielFeld.Feld[0, 0];
             tBox_Button2.Text = _spielFeld.Feld[0, 1];
@@ -596,12 +556,30 @@ namespace Memory {
         }
 
         private void MenuItem_Highscore_Click(object sender, RoutedEventArgs e) {
+            if (_mensch != null) {
+                return;
+            }
             Highscore_Fenster highscoreFenster = new Highscore_Fenster();
             highscoreFenster.ShowDialog();
         }
 
         private void MenuItem_Hilfe_Click(object sender, RoutedEventArgs e) {
+            FileStream fs;
+            StreamReader sr = null;
+            string zeile = null;
+            string pfad = @"..\Anleitung.txt";
+            using (fs = new FileStream(pfad, FileMode.OpenOrCreate)) {
+                if (fs.CanRead) {
 
+                    sr = new StreamReader(fs);
+
+                    while (!sr.EndOfStream) {
+                        zeile = sr.ReadLine();
+                    }
+                }
+                
+            }
+            MessageBox.Show(zeile, "Hilfe");
         }
 
         private void MenuItem_Hinweis_Click(object sender, RoutedEventArgs e) {

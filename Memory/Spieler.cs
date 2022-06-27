@@ -58,9 +58,7 @@ namespace Memory {
         /// <summary>
         /// Speichern der gesehenen Karten
         /// </summary>
-        /// <param name="karte"></param>
-        /// <param name="zeile"></param>
-        /// <param name="spalte"></param>
+        /// <param name="card"></param>
         public virtual void Gedaechtnis(KnownCard card) {
             GeseheneKarten.Add(card);//Speicher neue Karte ins Gedächniss 
         }
@@ -69,6 +67,8 @@ namespace Memory {
         /// Zufällige Karte auswählen
         /// </summary>
         /// <param name="spielFeld"></param>
+        /// <param name="rnd"></param>
+        /// <param name="aktcard"></param>
         /// <returns></returns>
         public abstract KnownCard Random(SpielFeld spielFeld, Random rnd, KnownCard aktcard);
 
