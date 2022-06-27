@@ -83,7 +83,7 @@ namespace Memory {
             }
 
             if (Highscore.ReadFromFileSchwer() != null) {
-                zeile = Highscore.ReadFromFile();
+                zeile = Highscore.ReadFromFileSchwer();
                 if (zeile.Length > 1) {
                     tBox1Names.Text = zeile[0].Name;
                     tBox1Punktes.Text = zeile[0].Punkte.ToString();

@@ -5,18 +5,21 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Memory {
+namespace Memory
+{
     /// <summary>
     /// Interaktionslogik für MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window {
+    public partial class MainWindow : Window
+    {
         Mensch _mensch = null;
         Computer _computer = null;
         Button[] _buttons = null;
         SpielFeld _spielFeld = null;
         Random _random = null;
         Highscore.Datensatz[] _datensatz;
-        public MainWindow() {
+        public MainWindow()
+        {
             InitializeComponent();
             _buttons = new Button[]{Button, Button2, Button3, Button4, Button4, Button5,
                                 Button6, Button7, Button8, Button9, Button10, Button11,
@@ -24,26 +27,34 @@ namespace Memory {
             IsAllButtonsEnabled(false);
         }
 
-        private async void ComputerKarteanschauen(KnownCard card) {
+        private async void ComputerKarteanschauen(KnownCard card)
+        {
             _computer.GeseheneKarten.Sort((s1, s2) => s1.Karte.CompareTo(s2.Karte));//Sortiere Karten Liste
 
-            for (int i = 0; i < _computer.GeseheneKarten.Count - 1; i++) {
+            for (int i = 0; i < _computer.GeseheneKarten.Count - 1; i++)
+            {
 
                 //Wenn Coumputer noch keine Karte angeschaut hatt entscheidung welche gewählt wird
-                if (_computer.OffeneKarten.Item1.Karte == "") {
+                if (_computer.OffeneKarten.Item1.Karte == "")
+                {
 
                     //Alle Karten im Gedächniss durchschauen
-                    if (_computer.GeseheneKarten[i].Karte == _computer.GeseheneKarten[i + 1].Karte) {
+                    if (_computer.GeseheneKarten[i].Karte == _computer.GeseheneKarten[i + 1].Karte)
+                    {
                         await ButtonEvent(_computer.GeseheneKarten[i]);
                         return;
                     }
 
-                } else {
+                }
+                else
+                {
                     //Wenn Karte im Gedächnis gleich aktuell gewählte karte, dann überspribge diese
-                    if ((_computer.GeseheneKarten[i].Zeile == card.Zeile) && (_computer.GeseheneKarten[i].Spalte == card.Spalte)) {
+                    if ((_computer.GeseheneKarten[i].Zeile == card.Zeile) && (_computer.GeseheneKarten[i].Spalte == card.Spalte))
+                    {
                         continue;
                     }
-                    if (_computer.GeseheneKarten[i].Karte == card.Karte) {
+                    if (_computer.GeseheneKarten[i].Karte == card.Karte)
+                    {
                         await ButtonEvent(_computer.GeseheneKarten[i]);
                         return;
                     }
@@ -53,7 +64,8 @@ namespace Memory {
             await ButtonEvent(rndCard);
         }
 
-        private void IsAllButtonsEnabled(bool isEnabled) {
+        private void IsAllButtonsEnabled(bool isEnabled)
+        {
             Button.IsEnabled = isEnabled;
             Button2.IsEnabled = isEnabled;
             Button3.IsEnabled = isEnabled;
@@ -72,37 +84,46 @@ namespace Memory {
             Button16.IsEnabled = isEnabled;
         }
 
-        private async Task ButtonEvent(KnownCard card) {
-            
+        private async Task ButtonEvent(KnownCard card)
+        {
+
             Spieler spieler;
 
             //Setze fest welcher Spieler an der Reihe ist
-            if (_mensch.AktiveRunde) {
+            if (_mensch.AktiveRunde)
+            {
                 spieler = _mensch;
-            } else {
+            }
+            else
+            {
                 spieler = _computer;
             }
 
             //Lasse dritten Button Druck nicht zu
-            if (!(spieler.OffeneKarten.Item2.Karte == "")) {
+            if (!(spieler.OffeneKarten.Item2.Karte == ""))
+            {
                 return;
             }
 
             ButtonContentShow(card);
 
-            if (spieler.OffeneKartenHandler(card)) {//Funktonsaufruf zum umgang mit aufgedeckten Karten
+            if (spieler.OffeneKartenHandler(card))
+            {//Funktonsaufruf zum umgang mit aufgedeckten Karten
                 bool kartenPaarRichtig = false;//Ist Karten paar gleich? 
                 //Kartenvergleichen
-                if (await KartenVergleich(spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2)) {
+                if (await KartenVergleich(spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2))
+                {
 
                     kartenPaarRichtig = true;
                     spieler.AnzahlGefundenerPaare++;
 
                     //Punkte für richtiges paar für Mensch 
-                    if (_mensch.AktiveRunde) {
+                    if (_mensch.AktiveRunde)
+                    {
                         int zahl = (int)_mensch.Stopwatch.Elapsed.TotalSeconds;
                         int newscore;
-                        switch (zahl) {
+                        switch (zahl)
+                        {
                             case 0:
                                 newscore = 10;
                                 break;
@@ -139,25 +160,30 @@ namespace Memory {
                         }
                         _mensch.Score += newscore;
                         tBoxPunkte.Text = _mensch.Score.ToString();
-                    } else {
+                    }
+                    else
+                    {
 
                         //Punkte für richtiges paar für Computer
                         _computer.AnzahlAufgedecktePaare++;
                         _computer.AnzahlRichtigerPaare++;
                     }
 
-                    
-                    
+
+
                     ButtonDeaktivieren(spieler);
 
                     //Wenn Karten paar nicht korrekt, dann zähler computer erhöhen
-                } else if (_computer.AktiveRunde) {
+                }
+                else if (_computer.AktiveRunde)
+                {
                     _computer.AnzahlAufgedecktePaare++;
                 }
 
                 ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde
                 //Spiel Beenden wenn alle Karten paare gefunden sind
-                if (_mensch.AnzahlGefundenerPaare == 4 || _computer.AnzahlGefundenerPaare == 5) {
+                if (_mensch.AnzahlGefundenerPaare == 4 || _computer.AnzahlGefundenerPaare == 5)
+                {
                     SpielBeenden();
                     return;
                 }
@@ -173,7 +199,8 @@ namespace Memory {
                 _computer.Gedaechtnis(spieler.OffeneKarten.Item2);
 
                 //Richtiges Kartenpaar vom Gedächnis und vom Spielfeld entfernen
-                if (kartenPaarRichtig == true) {
+                if (kartenPaarRichtig == true)
+                {
                     GedaechnisLoeschen(_mensch, _computer, spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2);
                 }
 
@@ -183,42 +210,49 @@ namespace Memory {
             }
 
             //Computer entscheidung welche Buttons gedrückt werden
-            if (_computer.AktiveRunde) {
+            if (_computer.AktiveRunde)
+            {
                 ComputerKarteanschauen(card);
             }
         }
 
-        private void SpielBeenden() {
-            Array.Resize(ref _datensatz, _datensatz.Length + 1);
-            _datensatz[_datensatz.Length] = new Highscore.Datensatz(_mensch.Name, _mensch.Score, (_computer.AnzahlRichtigerPaare / _computer.AnzahlAufgedecktePaare) * 100);
+        private void SpielBeenden()
+        {
+            Highscore.HIghscore(_mensch, _computer);
 
-            if (_computer.Difficulty == "Normal") {
-                Highscore.WriteToFile(_datensatz);
-
-            } else {
-                Highscore.WriteToFileSchwer(_datensatz);
-            }
-
-            if (_mensch.AnzahlGefundenerPaare >= _computer.AnzahlGefundenerPaare) {
+            if (_mensch.AnzahlGefundenerPaare >= _computer.AnzahlGefundenerPaare)
+            {
                 MessageBox.Show("Herzlichen Glückwunsch!\nSie haben das Spiel mit " + _mensch.Score + " Punkten gewonnen!");
-            } else {
+            }
+            else
+            {
                 MessageBox.Show("Schade!\nSie haben das Spiel leider mit " + _mensch.Score + " Punkten verloren!");
             }
+
+            _mensch = null;
+            _computer = null;
+            _spielFeld = null;
+            IsAllButtonsEnabled(false);
         }
 
         private void GedaechnisLoeschen(Spieler spieler1, Spieler spieler2,
-                                        KnownCard karte1, KnownCard karte2) {
-            while (spieler1.GeseheneKarten.Contains(karte1)) {
+                                        KnownCard karte1, KnownCard karte2)
+        {
+            while (spieler1.GeseheneKarten.Contains(karte1))
+            {
                 spieler1.GeseheneKarten.Remove(karte1);
             }
-            while (spieler1.GeseheneKarten.Contains(karte2)) {
+            while (spieler1.GeseheneKarten.Contains(karte2))
+            {
                 spieler1.GeseheneKarten.Remove(karte2);
             }
 
-            while (spieler2.GeseheneKarten.Contains(karte1)) {
+            while (spieler2.GeseheneKarten.Contains(karte1))
+            {
                 spieler2.GeseheneKarten.Remove(karte1);
             }
-            while (spieler2.GeseheneKarten.Remove(karte2)) {
+            while (spieler2.GeseheneKarten.Remove(karte2))
+            {
                 spieler2.GeseheneKarten.Remove(karte2);
             }
 
@@ -226,14 +260,18 @@ namespace Memory {
             spieler2.GeseheneKarten.TrimExcess();
         }
 
-        private void ButtonDeaktivieren(Spieler spieler) {
+        private void ButtonDeaktivieren(Spieler spieler)
+        {
 
             KnownCard[] deaktivierendeKarten = new KnownCard[] { spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2 };
-            foreach (var card in deaktivierendeKarten) {
+            foreach (var card in deaktivierendeKarten)
+            {
                 //Deaktivieren des korrektem karten paars
-                switch (card.Zeile) {
+                switch (card.Zeile)
+                {
                     case 1:
-                        switch (card.Spalte) {
+                        switch (card.Spalte)
+                        {
                             case 1:
                                 Button.IsEnabled = false;
                                 _spielFeld.Feld[0, 0] = "";
@@ -256,7 +294,8 @@ namespace Memory {
                         break;
 
                     case 2:
-                        switch (card.Spalte) {
+                        switch (card.Spalte)
+                        {
                             case 1:
                                 Button5.IsEnabled = false;
                                 _spielFeld.Feld[1, 0] = "";
@@ -279,7 +318,8 @@ namespace Memory {
                         break;
 
                     case 3:
-                        switch (card.Spalte) {
+                        switch (card.Spalte)
+                        {
                             case 1:
                                 Button9.IsEnabled = false;
                                 _spielFeld.Feld[2, 0] = "";
@@ -302,7 +342,8 @@ namespace Memory {
                         break;
 
                     case 4:
-                        switch (card.Spalte) {
+                        switch (card.Spalte)
+                        {
                             case 1:
                                 Button13.IsEnabled = false;
                                 _spielFeld.Feld[3, 0] = "";
@@ -327,7 +368,8 @@ namespace Memory {
             }
         }
 
-        private async Task<bool> KartenVergleich(KnownCard karte1, KnownCard karte2) {
+        private async Task<bool> KartenVergleich(KnownCard karte1, KnownCard karte2)
+        {
             //Maus cursor auf warten symbol setzen und warten damit Spieler sich die Karten anschauen kann
             Mouse.OverrideCursor = Cursors.Wait;
             await Task.Delay(3000);
@@ -335,20 +377,25 @@ namespace Memory {
 
             //Kontrolle ob Karten paar gleich ist
             bool istGleicheKarte = false;
-            if (karte1.Karte == karte2.Karte) {
+            if (karte1.Karte == karte2.Karte)
+            {
                 istGleicheKarte = true;
             }
 
             return istGleicheKarte;
         }
 
-        private void ButtonContentHide(Spieler spieler) {
+        private void ButtonContentHide(Spieler spieler)
+        {
             KnownCard[] versteckendeKarten = new KnownCard[] { spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2 };
-            foreach (var card in versteckendeKarten) {
+            foreach (var card in versteckendeKarten)
+            {
                 //Verstecken des karten paars
-                switch (card.Zeile) {
+                switch (card.Zeile)
+                {
                     case 1:
-                        switch (card.Spalte) {
+                        switch (card.Spalte)
+                        {
                             case 1:
                                 tBox_Button.Visibility = Visibility.Hidden;
                                 break;
@@ -367,7 +414,8 @@ namespace Memory {
                         break;
 
                     case 2:
-                        switch (card.Spalte) {
+                        switch (card.Spalte)
+                        {
                             case 1:
                                 tBox_Button5.Visibility = Visibility.Hidden;
                                 break;
@@ -386,7 +434,8 @@ namespace Memory {
                         break;
 
                     case 3:
-                        switch (card.Spalte) {
+                        switch (card.Spalte)
+                        {
                             case 1:
                                 tBox_Button9.Visibility = Visibility.Hidden;
                                 break;
@@ -394,7 +443,7 @@ namespace Memory {
                                 tBox_Button10.Visibility = Visibility.Hidden;
                                 break;
                             case 3:
-                                tBox_Button11.Visibility = Visibility.Hidden; 
+                                tBox_Button11.Visibility = Visibility.Hidden;
                                 break;
                             case 4:
                                 tBox_Button12.Visibility = Visibility.Hidden;
@@ -405,7 +454,8 @@ namespace Memory {
                         break;
 
                     case 4:
-                        switch (card.Spalte) {
+                        switch (card.Spalte)
+                        {
                             case 1:
                                 tBox_Button13.Visibility = Visibility.Hidden;
                                 break;
@@ -427,11 +477,14 @@ namespace Memory {
 
         }
 
-        private void ButtonContentShow(KnownCard card) {
+        private void ButtonContentShow(KnownCard card)
+        {
             //Verstecken des karten paars
-            switch (card.Zeile) {
+            switch (card.Zeile)
+            {
                 case 1:
-                    switch (card.Spalte) {
+                    switch (card.Spalte)
+                    {
                         case 1:
                             tBox_Button.Visibility = Visibility.Visible;
                             break;
@@ -450,7 +503,8 @@ namespace Memory {
                     break;
 
                 case 2:
-                    switch (card.Spalte) {
+                    switch (card.Spalte)
+                    {
                         case 1:
                             tBox_Button5.Visibility = Visibility.Visible;
                             break;
@@ -469,7 +523,8 @@ namespace Memory {
                     break;
 
                 case 3:
-                    switch (card.Spalte) {
+                    switch (card.Spalte)
+                    {
                         case 1:
                             tBox_Button9.Visibility = Visibility.Visible;
                             break;
@@ -488,7 +543,8 @@ namespace Memory {
                     break;
 
                 case 4:
-                    switch (card.Spalte) {
+                    switch (card.Spalte)
+                    {
                         case 1:
                             tBox_Button13.Visibility = Visibility.Visible;
                             break;
@@ -508,16 +564,20 @@ namespace Memory {
             }
         }
 
-        private void MenuItem_NeuesSpiel_Click(object sender, RoutedEventArgs e) {
+        private void MenuItem_NeuesSpiel_Click(object sender, RoutedEventArgs e)
+        {
             //Neues Dialog Fenster für neues Spiel erstellen Starten
             Neues_Spiel_Fenster neuesSpielFenster = new Neues_Spiel_Fenster();
             bool? ok = neuesSpielFenster.ShowDialog();
 
-            if ((bool)ok) {//Erstellen aller Spielnotwendigen Objekte
+            if ((bool)ok)
+            {//Erstellen aller Spielnotwendigen Objekte
                 _spielFeld = neuesSpielFenster.SpielFeld;
                 _mensch = neuesSpielFenster.Mensch;
                 _computer = neuesSpielFenster.Computer;
-            } else {
+            }
+            else
+            {
                 return;
             }
 
@@ -529,12 +589,15 @@ namespace Memory {
             //Buttons aktivieren
             IsAllButtonsEnabled(true);
 
-            if (_computer.Difficulty == "Normal") {
+            if (_computer.Difficulty == "Normal")
+            {
                 _datensatz = Highscore.ReadFromFile();
-            } else {
+            }
+            else
+            {
                 _datensatz = Highscore.ReadFromFileSchwer();
             }
-            
+
 
             tBox_Button.Text = _spielFeld.Feld[0, 0];
             tBox_Button2.Text = _spielFeld.Feld[0, 1];
@@ -556,35 +619,43 @@ namespace Memory {
             _random = new Random();
         }
 
-        private void MenuItem_Highscore_Click(object sender, RoutedEventArgs e) {
-            if (_mensch != null) {
+        private void MenuItem_Highscore_Click(object sender, RoutedEventArgs e)
+        {
+            if (_mensch != null)
+            {
                 return;
             }
             Highscore_Fenster highscoreFenster = new Highscore_Fenster();
             highscoreFenster.ShowDialog();
         }
 
-        private void MenuItem_Hilfe_Click(object sender, RoutedEventArgs e) {
+        private void MenuItem_Hilfe_Click(object sender, RoutedEventArgs e)
+        {
             FileStream fs;
             StreamReader sr = null;
             string zeile = null;
             string pfad = @"..\Anleitung.txt";
-            using (fs = new FileStream(pfad, FileMode.OpenOrCreate)) {
-                if (fs.CanRead) {
+            using (fs = new FileStream(pfad, FileMode.OpenOrCreate))
+            {
+                if (fs.CanRead)
+                {
 
                     sr = new StreamReader(fs);
 
-                    while (!sr.EndOfStream) {
+                    while (!sr.EndOfStream)
+                    {
                         zeile = sr.ReadLine();
                     }
                 }
-                
+
             }
             MessageBox.Show(zeile, "Hilfe");
         }
 
-        private void MenuItem_Hinweis_Click(object sender, RoutedEventArgs e) {
-            if (_mensch == null) {
+        private void MenuItem_Hinweis_Click(object sender, RoutedEventArgs e)
+        {
+            if (_mensch == null)
+            {
                 MessageBox.Show(
                     "Es muss ein Spiel aktiv sein, " +
                     "um mit dem Spiel interagierende Buttons Drücken zu können!", "Fehler");
@@ -593,8 +664,10 @@ namespace Memory {
 
         }
 
-        private async void MenuItem_Zufall_Click(object sender, RoutedEventArgs e) {
-            if (_mensch == null) {
+        private async void MenuItem_Zufall_Click(object sender, RoutedEventArgs e)
+        {
+            if (_mensch == null)
+            {
                 MessageBox.Show("Es muss ein Spiel aktiv sein," +
                     " um mit dem Spiel interagierende Buttons Drücken zu können!", "Fehler");
                 return;
@@ -611,82 +684,98 @@ namespace Memory {
          * Button Events
          * 
          */
-        private async void Button_Click(object sender, RoutedEventArgs e) {
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
             KnownCard card = new KnownCard(tBox_Button.Text, 1, 1);//Karte des Buttons
             await ButtonEvent(card);
         }//Button 1
 
-        private async void Button_Click_2(object sender, RoutedEventArgs e) {
+        private async void Button_Click_2(object sender, RoutedEventArgs e)
+        {
             KnownCard card = new KnownCard(tBox_Button2.Text, 1, 2);//Karte des Buttons
             await ButtonEvent(card);
         }//Button 2
 
-        private async void Button_Click_3(object sender, RoutedEventArgs e) {
+        private async void Button_Click_3(object sender, RoutedEventArgs e)
+        {
             KnownCard card = new KnownCard(tBox_Button3.Text, 1, 3);//Karte des Buttons
             await ButtonEvent(card);
         }//Button 3
 
-        private async void Button_Click_4(object sender, RoutedEventArgs e) {
+        private async void Button_Click_4(object sender, RoutedEventArgs e)
+        {
             KnownCard card = new KnownCard(tBox_Button4.Text, 1, 4);//Karte des Buttons
             await ButtonEvent(card);
         }//Button 4
 
-        private async void Button_Click_5(object sender, RoutedEventArgs e) {
+        private async void Button_Click_5(object sender, RoutedEventArgs e)
+        {
             KnownCard card = new KnownCard(tBox_Button5.Text, 2, 1);//Karte des Buttons
             await ButtonEvent(card);
         }//Button 5
 
-        private async void Button_Click_6(object sender, RoutedEventArgs e) {
+        private async void Button_Click_6(object sender, RoutedEventArgs e)
+        {
             KnownCard card = new KnownCard(tBox_Button6.Text, 2, 2);//Karte des Buttons
             await ButtonEvent(card);
         }//Button 6
 
-        private async void Button_Click_7(object sender, RoutedEventArgs e) {
+        private async void Button_Click_7(object sender, RoutedEventArgs e)
+        {
             KnownCard card = new KnownCard(tBox_Button7.Text, 2, 3);//Karte des Buttons
             await ButtonEvent(card);
         }//Button 7
 
-        private async void Button_Click_8(object sender, RoutedEventArgs e) {
+        private async void Button_Click_8(object sender, RoutedEventArgs e)
+        {
             KnownCard card = new KnownCard(tBox_Button8.Text, 2, 4);//Karte des Buttons
             await ButtonEvent(card);
         }//Button 8
 
-        private async void Button_Click_9(object sender, RoutedEventArgs e) {
+        private async void Button_Click_9(object sender, RoutedEventArgs e)
+        {
             KnownCard card = new KnownCard(tBox_Button9.Text, 3, 1);//Karte des Buttons
             await ButtonEvent(card);
         }//Button 9
 
-        private async void Button_Click_10(object sender, RoutedEventArgs e) {
+        private async void Button_Click_10(object sender, RoutedEventArgs e)
+        {
             KnownCard card = new KnownCard(tBox_Button10.Text, 3, 2);//Karte des Buttons
             await ButtonEvent(card);
         }//Button 10
 
-        private async void Button_Click_11(object sender, RoutedEventArgs e) {
+        private async void Button_Click_11(object sender, RoutedEventArgs e)
+        {
             KnownCard card = new KnownCard(tBox_Button11.Text, 3, 3);//Karte des Buttons
             await ButtonEvent(card);
         }//Button 11
 
-        private async void Button_Click_12(object sender, RoutedEventArgs e) {
+        private async void Button_Click_12(object sender, RoutedEventArgs e)
+        {
             KnownCard card = new KnownCard(tBox_Button12.Text, 3, 4);//Karte des Buttons
             await ButtonEvent(card);
         }//Button 12
 
-        private async void Button_Click_13(object sender, RoutedEventArgs e) {
+        private async void Button_Click_13(object sender, RoutedEventArgs e)
+        {
             KnownCard card = new KnownCard(tBox_Button13.Text, 4, 1);//Karte des Buttons
             await ButtonEvent(card);
         }//Button 13
 
-        private async void Button_Click_14(object sender, RoutedEventArgs e) {
+        private async void Button_Click_14(object sender, RoutedEventArgs e)
+        {
             KnownCard card = new KnownCard(tBox_Button14.Text, 4, 2);//Karte des Buttons
             await ButtonEvent(card);
         }//Button 14
 
-        private async void Button_Click_15(object sender, RoutedEventArgs e) {
+        private async void Button_Click_15(object sender, RoutedEventArgs e)
+        {
             KnownCard card = new KnownCard(tBox_Button15.Text, 4, 3);//Karte des Buttons
             await ButtonEvent(card);
         }//Button 15
 
-        private async void Button_Click_16(object sender, RoutedEventArgs e) {
+        private async void Button_Click_16(object sender, RoutedEventArgs e)
+        {
             KnownCard card = new KnownCard(tBox_Button16.Text, 4, 4);//Karte des Buttons
             await ButtonEvent(card);
         }//Button 16
