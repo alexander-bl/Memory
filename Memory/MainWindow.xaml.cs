@@ -221,11 +221,14 @@ namespace Memory
             }
         }
 
+        /// <summary>
+        /// Beenden des Spiels
+        /// </summary>
         private void SpielBeenden()
         {
             Highscore.HIghscore(_mensch, _computer);
 
-            if (_mensch.AnzahlGefundenerPaare >= _computer.AnzahlGefundenerPaare)
+            if (_mensch.AnzahlGefundenerPaare >= _computer.AnzahlGefundenerPaare)   
             {
                 MessageBox.Show("Herzlichen Glückwunsch!\nSie haben das Spiel mit " + _mensch.Score + " Punkten gewonnen!");
             }
