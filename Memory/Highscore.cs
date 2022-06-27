@@ -73,7 +73,7 @@ namespace Memory {
                             string[] items = inhalt.Split(';');
                             if (!string.IsNullOrEmpty(items[0]) && items[0] != " ") {
 
-                                Array.Resize(ref datensatz, count + 1);
+                                Array.Resize(ref daten, count + 1);
                                 daten[count] = new Datensatz(items[0], int.Parse(items[1]), double.Parse(items[2]));
                                 count++;
                             }
@@ -109,7 +109,7 @@ namespace Memory {
                             string[] items = inhalt.Split(';');
                             if (!string.IsNullOrEmpty(items[0]) && items[0] != " ") {
 
-                                Array.Resize(ref datensatz, count + 1);
+                                Array.Resize(ref daten, count + 1);
                                 daten[count] = new Datensatz(items[0], int.Parse(items[1]), double.Parse(items[2]));
                                 count++;
                             }
@@ -143,11 +143,21 @@ namespace Memory {
 
         public static void HIghscore(Mensch mensch, Computer computer) {
             Datensatz[] datensatzs;
-            datensatzs = ReadFromFile();
+            if (computer.Difficulty == "Normal") {
+                datensatzs = ReadFromFile();
+            } else {
+                datensatzs = ReadFromFileSchwer();
+            }
+            
             Array.Resize(ref datensatzs, datensatzs.Length + 1);
-            datensatzs[datensatzs.Length] = new Datensatz(mensch.Name, mensch.Score, (computer.AnzahlRichtigerPaare / computer.AnzahlAufgedecktePaare) * 100);
+            datensatzs[datensatzs.Length-1] = new Datensatz(mensch.Name, mensch.Score, (computer.AnzahlRichtigerPaare / computer.AnzahlAufgedecktePaare) * 100);
             bubbleSortSelfemade(ref datensatzs);
-            WriteToFile(datensatzs);
+            if (computer.Difficulty == "Normal") {
+                WriteToFile(datensatzs);
+            } else {
+                WriteToFileSchwer(datensatzs);
+            }
+            
 
         }
 
