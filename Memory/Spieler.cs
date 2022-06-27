@@ -13,6 +13,7 @@ namespace Memory {
         Tuple<KnownCard, KnownCard> _offeneKarten;//Aktuell aufgedeckten Karten
         bool _aktiveRunde;//Ist Spieler aktuell an der Reihe?
         int _anzahlGefundenerPaare;//Anzahl aller Gefundenen Karten paare
+        List<KnownCard> _verfuegbareKarten; //Liste der noch verfügbaren Karten
 
         /// <summary>
         /// Konstruktor
@@ -25,6 +26,15 @@ namespace Memory {
 
             AktiveRunde = aktiveRunde;
             AnzahlGefundenerPaare = 0;
+            VerfuegbareKarten = new List<KnownCard>();
+        }
+
+        public List<KnownCard> VerfuegbareKarten {
+            get => _verfuegbareKarten;
+            set {
+                _verfuegbareKarten = value ?? throw new ArgumentNullException(
+                                        "Keine Vervügbaren Karten vorhanden!");
+            }
         }
 
         public List<KnownCard> GeseheneKarten {
@@ -70,7 +80,18 @@ namespace Memory {
         /// <param name="rnd"></param>
         /// <param name="aktcard"></param>
         /// <returns></returns>
-        public abstract KnownCard Random(SpielFeld spielFeld, Random rnd, KnownCard aktcard);
+        public virtual KnownCard Random(SpielFeld spielFeld, Random rnd, KnownCard aktcard) {
+            KnownCard card;
+            int zahl;
+            do {
+                zahl = rnd.Next(VerfuegbareKarten.Count);
+                card = VerfuegbareKarten[zahl];
+
+            } while (aktcard.Spalte == card.Spalte && aktcard.Zeile == card.Zeile);
+            //Wenn ausgesuchte Karte gleich bereits ausgewählte Karte nehme andere Karte
+
+            return card;
+        }
 
         /// <summary>
         /// Handled die Offenen Karten und Zeit des aktuell Spielenden Spielers

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 /*
 * Kindklasse von Spieler
 * Autoren: Alexander Bletsch, Anna Stork
@@ -12,8 +9,8 @@ using System.Windows.Controls;
 namespace Memory {
     public class Computer : Spieler {
         string _difficulty;//Schwierigkeitsgrad des Computers
-        int _anzahlAufgedecktePaare;//Anzahl aller Aufgedeckten Karten paare
         int _anzahlRichtigerPaare;//Anzahl aller richtig aufgedeckten Karten paare
+        
 
         public string Difficulty {
             get => _difficulty;
@@ -28,17 +25,6 @@ namespace Memory {
             }
         }
 
-        public int AnzahlAufgedecktePaare {
-            get => _anzahlAufgedecktePaare;
-            set {
-                if (value < 0) {
-                    throw new ArgumentOutOfRangeException(
-                        "Anzahl Aufgedeckter Paare ist kleiner 0!");
-                }
-                _anzahlAufgedecktePaare = value;
-            }
-        }
-
         public int AnzahlRichtigerPaare {
             get => _anzahlRichtigerPaare;
             set {
@@ -50,6 +36,8 @@ namespace Memory {
             }
         }
 
+        
+
         /// <summary>
         /// Konstruktor
         /// </summary>
@@ -57,7 +45,6 @@ namespace Memory {
         /// <param name="aktiveRunde"></param>
         public Computer(string difficulty, bool aktiveRunde) : base(aktiveRunde) {
             Difficulty = difficulty;
-            AnzahlAufgedecktePaare = 0;
             AnzahlRichtigerPaare = 0;
         }
 
@@ -97,15 +84,7 @@ namespace Memory {
         /// <param name="aktcard"></param>
         /// <returns></returns>
         public override KnownCard Random(SpielFeld spielFeld, Random rnd, KnownCard aktcard) {
-            int zeile;
-            int spalte;
-            KnownCard card;
-            do {
-                zeile = rnd.Next(0, 3);
-                spalte = rnd.Next(0, 3);
-                card = new KnownCard(spielFeld.Feld[zeile,spalte], zeile+1, spalte+1);//Auswahl Zufälliger Karte
-            } while (spielFeld.Feld[zeile,spalte] == "" || (aktcard.Spalte == card.Spalte && aktcard.Zeile == card.Zeile));
-                            //Wenn ausgesuchte Karte bereits Deaktiviert ist nehme anderen zufällige Karte
+            KnownCard card = base.Random(spielFeld, rnd, aktcard);
 
             return card;
         }

@@ -114,10 +114,10 @@ namespace Memory {
                 if (fs.CanRead)
                 {
 
+
                     sr = new StreamReader(fs);
 
-                    while (!sr.EndOfStream)
-                    {
+                    while (!sr.EndOfStream) {
 
                         zeile = sr.ReadLine();  // Schreiben des Inhaltes der Datei in string 
                         string[] datensatz = zeile.Split('#');  //Aufteilen des Strings in einzelne Array-Felder pro Datensatz
