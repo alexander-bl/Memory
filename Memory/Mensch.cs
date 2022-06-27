@@ -32,6 +32,10 @@ namespace Memory {
                 if (value.Length < 2) {
                     throw new ArgumentOutOfRangeException("Name ist zu kurz! Mindestens 2 Zeichen lang.");
                 }
+                if (value == ";" || value == "#") {
+                    throw new ArgumentException(
+                            " Keine ; oder # Zeichen für Namen verwenden!");
+                }
                 _name = value;
             }
         }
