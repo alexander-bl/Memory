@@ -1,6 +1,6 @@
-﻿using Serilog;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 /*
@@ -64,9 +64,7 @@ namespace Memory {
         /// <summary>
         /// Speichern("Merken") der Letzen aufgedeckten Karten
         /// </summary>
-        /// <param name="karte"></param>
-        /// <param name="zeile"></param>
-        /// <param name="spalte"></param>
+        /// <param name="card"></param>
         public override void Gedaechtnis(KnownCard card) {
             base.Gedaechtnis(card);//Speicher Karte ins Gedächniss
             int maxGedaechnisGroesse;
@@ -92,9 +90,11 @@ namespace Memory {
         }
 
         /// <summary>
-        /// Auswahl eines Zufähligen Buttons
+        /// Zufällige Karte auswählen
         /// </summary>
-        /// <param name="buttons"></param>
+        /// <param name="spielFeld"></param>
+        /// <param name="rnd"></param>
+        /// <param name="aktcard"></param>
         /// <returns></returns>
         public override KnownCard Random(SpielFeld spielFeld, Random rnd, KnownCard aktcard) {
             int zeile;

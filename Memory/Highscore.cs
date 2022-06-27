@@ -9,79 +9,75 @@ using System.IO;
  * Autoren: Alexander Bletsch, Anna Stork
  * Erstellt: 09.06.22
  */
-namespace Memory
-{
-    public static class Highscore
-    {
+namespace Memory {
+    public static class Highscore {
 
-        public static void WriteToFile(Computer computer, Mensch mensch, ref List<Tuple<String, string, int, string, Double,string, string>> highscores)
-        {
-            ReadFromFile();
-            Highscores(mensch, computer, ref highscores);
+        public static void WriteToFile(Datensatz[] daten) {
 
             string pfad = @"..\highscoreNormal.txt";
 
             //Öffnen oder Erstellen der Datei
-            using (FileStream fs = new FileStream(pfad, FileMode.OpenOrCreate))
-            {
+            using (FileStream fs = new FileStream(pfad, FileMode.OpenOrCreate)) {
                 StreamWriter sw = new StreamWriter(fs);
 
-                sw.Write(highscores);
-                sw.Write(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
-                
+                string text = daten[0].Name + ';' + daten[0].Punkte + ";" + daten[0].Computer + '#';
+                for (int i = 0; i < daten.Length; i++) {
+                    text = text + daten[i].Name + ';' + daten[i].Punkte + ";" + daten[i].Computer + '#';
+                }
+
+                sw.Write(text);
 
                 sw.Flush();
             }
-          
+
         }
 
-        public static string ReadFromFile()
-        {
-            string zeile = null;
-            FileStream fs = null;
-            StreamReader sr = null;
-            string pfad = @"..\highscoreNormal.txt";
-            using (fs = new FileStream(pfad, FileMode.OpenOrCreate))
-            {
-                if (fs.CanRead)
-                { 
+        public static void WriteToFileSchwer(Datensatz[] daten) {
 
-                    sr = new StreamReader(fs);
-
-                    while (!sr.EndOfStream)
-                    {
-                       
-                        zeile = sr.ReadLine();
-                        string[] data = zeile.Split(';');
-
-                    }
-
-                    
-
-                }
-            }
-            return zeile;
-           
-        }
-
-        public static string ReadFromFileSchwer()
-        {
-            string zeile = null;
-            FileStream fs = null;
-            StreamReader sr = null;
             string pfad = @"..\highscoreSchwer.txt";
-            using (fs = new FileStream(pfad, FileMode.OpenOrCreate))
-            {
-                if (fs.CanRead)
-                {
+
+            //Öffnen oder Erstellen der Datei
+            using (FileStream fs = new FileStream(pfad, FileMode.OpenOrCreate)) {
+                StreamWriter sw = new StreamWriter(fs);
+
+                string text = daten[0].Name + ';' + daten[0].Punkte + ";" + daten[0].Computer + '#';
+                for (int i = 0; i < daten.Length; i++) {
+                    text = text + daten[i].Name + ';' + daten[i].Punkte + ";" + daten[i].Computer + '#';
+                }
+
+                sw.Write(text);
+
+                sw.Flush();
+            }
+
+
+        }
+
+        public static Datensatz[] ReadFromFile() {
+            string zeile = null;
+            FileStream fs = null;
+            StreamReader sr = null;
+            int count = 0;
+            Datensatz[] daten = new Datensatz[1];
+            string pfad = @"..\highscoreNormal.txt";
+            using (fs = new FileStream(pfad, FileMode.OpenOrCreate)) {
+                if (fs.CanRead) {
 
                     sr = new StreamReader(fs);
 
-                    while (!sr.EndOfStream)
-                    {
+                    while (!sr.EndOfStream) {
 
                         zeile = sr.ReadLine();
-                        string[] data = zeile.Split(';');
+                        string[] datensatz = zeile.Split('#');
+                        foreach (string inhalt in datensatz) {
+                            string[] items = inhalt.Split(';');
+                            if (!string.IsNullOrEmpty(items[0]) && items[0] != " ") {
+
+                                Array.Resize(ref datensatz, count + 1);
+                                daten[count] = new Datensatz(items[0], int.Parse(items[1]), double.Parse(items[2]));
+                                count++;
+                            }
+                        }
 
                     }
 
@@ -89,24 +85,83 @@ namespace Memory
 
                 }
             }
-            return zeile;
+            return daten;
 
         }
 
-        public static List<Tuple<String,string,int,string, Double,string, string>> Highscores(Mensch mensch, Computer computer, ref List<Tuple<String, string, int, string, Double,string, string>> highscores)
-        {
-            double erfolgsquote = (computer.AnzahlRichtigerPaare / computer.AnzahlAufgedecktePaare) * 100; 
+        public static Datensatz[] ReadFromFileSchwer() {
+            string zeile = null;
+            FileStream fs = null;
+            StreamReader sr = null;
+            int count = 0;
+            Datensatz[] daten = null;
+            string pfad = @"..\highscoreSchwer.txt";
+            using (fs = new FileStream(pfad, FileMode.OpenOrCreate)) {
+                if (fs.CanRead) {
 
-            highscores.Add(new Tuple<String, string, int,string, Double,string, string>(mensch.Name,";",mensch.Score,";", erfolgsquote,"%",";"));
+                    sr = new StreamReader(fs);
 
-            highscores.Sort((s1, s2) => s1.Item3.CompareTo(s2.Item3));
+                    while (!sr.EndOfStream) {
+
+                        zeile = sr.ReadLine();
+                        string[] datensatz = zeile.Split('#');
+                        foreach (string inhalt in datensatz) {
+                            string[] items = inhalt.Split(';');
+                            if (!string.IsNullOrEmpty(items[0]) && items[0] != " ") {
+
+                                Array.Resize(ref datensatz, count + 1);
+                                daten[count] = new Datensatz(items[0], int.Parse(items[1]), double.Parse(items[2]));
+                                count++;
+                            }
+                        }
+
+                    }
 
 
-            return highscores;
+
+                }
+            }
+            return daten;
 
         }
 
 
+
+
+
+        public struct Datensatz {
+            public string Name;
+            public int Punkte;
+            public double Computer;
+
+            public Datensatz(string name = "", int punkte = 0, double computer = 0) {
+                Name = name;
+                Punkte = punkte;
+                Computer = computer;
+            }
+        }
+
+        public static void HIghscore(Mensch mensch, Computer computer) {
+            Datensatz[] datensatzs;
+            datensatzs = ReadFromFile();
+            Array.Resize(ref datensatzs, datensatzs.Length + 1);
+            datensatzs[datensatzs.Length] = new Datensatz(mensch.Name, mensch.Score, (computer.AnzahlRichtigerPaare / computer.AnzahlAufgedecktePaare) * 100);
+            bubbleSortSelfemade(ref datensatzs);
+            WriteToFile(datensatzs);
+
+        }
+
+        private static void bubbleSortSelfemade(ref Datensatz[] pListe) {
+            for (int i = pListe.Length - 1; i > 0; i--) {
+                for (int k = 0; k < i; k++) {
+                    if (pListe[k].Punkte < pListe[k + 1].Punkte) {
+                        Datensatz speicher = new Datensatz(pListe[k].Name, pListe[k].Punkte, pListe[k].Computer);
+                        pListe[k] = pListe[k + 1];
+                        pListe[k + 1] = speicher;
+                    }
+                }
+            }
+        }
     }
 
 
