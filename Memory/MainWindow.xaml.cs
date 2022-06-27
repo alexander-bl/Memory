@@ -14,7 +14,7 @@ namespace Memory
     {
         Mensch _mensch = null;
         Computer _computer = null;
-        Button[] _buttons = null;
+        Button[] _buttons;
         SpielFeld _spielFeld = null;
         Random _random = null;
         Highscore.Datensatz[] _datensatz;
@@ -104,6 +104,10 @@ namespace Memory
             {
                 return;
             }
+            if (spieler.OffeneKarten.Item1.Zeile == card.Zeile 
+                && spieler.OffeneKarten.Item1.Spalte == card.Spalte) {
+                return;
+            }
 
             ButtonContentShow(card);
 
@@ -113,6 +117,12 @@ namespace Memory
                 //Kartenvergleichen
                 if (await KartenVergleich(spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2))
                 {
+ 
+                    //Entfernen des Korrekten Kartenpaars aus den Verfügbaren Karten
+                    _mensch.VerfuegbareKarten.Remove(spieler.OffeneKarten.Item1);
+                    _mensch.VerfuegbareKarten.Remove(spieler.OffeneKarten.Item2);
+                    _computer.VerfuegbareKarten.Remove(spieler.OffeneKarten.Item1);
+                    _computer.VerfuegbareKarten.Remove(spieler.OffeneKarten.Item2);
 
                     kartenPaarRichtig = true;
                     spieler.AnzahlGefundenerPaare++;
@@ -165,7 +175,6 @@ namespace Memory
                     {
 
                         //Punkte für richtiges paar für Computer
-                        _computer.AnzahlAufgedecktePaare++;
                         _computer.AnzahlRichtigerPaare++;
                     }
 
@@ -175,14 +184,10 @@ namespace Memory
 
                     //Wenn Karten paar nicht korrekt, dann zähler computer erhöhen
                 }
-                else if (_computer.AktiveRunde)
-                {
-                    _computer.AnzahlAufgedecktePaare++;
-                }
 
                 ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde
                 //Spiel Beenden wenn alle Karten paare gefunden sind
-                if (_mensch.AnzahlGefundenerPaare == 4 || _computer.AnzahlGefundenerPaare == 5)
+                if (_mensch.AnzahlGefundenerPaare + _computer.AnzahlGefundenerPaare == 8)
                 {
                     SpielBeenden();
                     return;
@@ -616,6 +621,12 @@ namespace Memory
             tBox_Button15.Text = _spielFeld.Feld[3, 2];
             tBox_Button16.Text = _spielFeld.Feld[3, 3];
 
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    _computer.VerfuegbareKarten.Add(new KnownCard(_spielFeld.Feld[i,j], i+1, j+1));
+                }
+            }
+
             _random = new Random();
         }
 
@@ -660,6 +671,37 @@ namespace Memory
                     "Es muss ein Spiel aktiv sein, " +
                     "um mit dem Spiel interagierende Buttons Drücken zu können!", "Fehler");
                 return;
+            }
+
+            _mensch.GeseheneKarten.Sort((s1, s2) => s1.Karte.CompareTo(s2.Karte));//Sortiere Karten Liste
+            int zeile = -1;
+            for (int i = 0; i < _mensch.GeseheneKarten.Count - 1; i++) {
+
+                //Wenn keine Kart aufgedeckt schau ob 2 karten bekannt sind
+                if (_mensch.OffeneKarten.Item1.Karte == "") {
+
+                    //Alle Karten im Gedächniss durchschauen
+                    if (_mensch.GeseheneKarten[i].Karte == _mensch.GeseheneKarten[i + 1].Karte) {
+                        zeile = _mensch.GeseheneKarten[i].Zeile;
+                        break;
+                    }
+
+                } else {
+                    //Wenn Karte im Gedächnis gleich bereits aufgedeckte karte, dann überspribge diese
+                    if ((_mensch.GeseheneKarten[i].Zeile == _mensch.OffeneKarten.Item1.Zeile) 
+                        && (_mensch.GeseheneKarten[i].Spalte == _mensch.OffeneKarten.Item1.Spalte)) {
+                        continue;
+                    }
+                    if (_mensch.GeseheneKarten[i].Karte == _mensch.OffeneKarten.Item1.Karte) {
+                        zeile = _mensch.GeseheneKarten[i].Zeile;
+                        break;
+                    }
+                }
+            }
+            if (zeile == -1) {
+                MessageBox.Show("Keine Karte Gefunden!");
+            } else {
+                MessageBox.Show("Karte in Zeile " + zeile + " gefunden!");
             }
 
         }

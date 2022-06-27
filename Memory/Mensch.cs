@@ -74,15 +74,7 @@ namespace Memory {
         /// <param name="aktcard"></param>
         /// <returns></returns>
         public override KnownCard Random(SpielFeld spielFeld, Random rnd, KnownCard aktcard) {
-            int zeile;
-            int spalte;
-            KnownCard card;
-            do {
-                zeile = rnd.Next(0, 3);
-                spalte = rnd.Next(0, 3);
-                card = new KnownCard(spielFeld.Feld[zeile, spalte], zeile + 1, spalte + 1);//Auswahl Zufälliger Karte
-            } while (spielFeld.Feld[zeile, spalte] == "" || (aktcard.Spalte == card.Spalte && aktcard.Zeile == card.Zeile));
-            //Wenn ausgesuchte Karte bereits Deaktiviert ist nehme anderen zufällige Karte
+            KnownCard card = base.Random(spielFeld, rnd, aktcard);
 
             return card;
         }
