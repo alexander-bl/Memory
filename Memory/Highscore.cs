@@ -21,7 +21,7 @@ namespace Memory {
                 StreamWriter sw = new StreamWriter(fs);
 
                 string text = daten[0].Name + ';' + daten[0].Punkte + ";" + daten[0].Computer + '#';
-                for (int i = 0; i < daten.Length; i++) {
+                for (int i = 1; i < daten.Length; i++) {
                     text = text + daten[i].Name + ';' + daten[i].Punkte + ";" + daten[i].Computer + '#';
                 }
 
@@ -41,7 +41,7 @@ namespace Memory {
                 StreamWriter sw = new StreamWriter(fs);
 
                 string text = daten[0].Name + ';' + daten[0].Punkte + ";" + daten[0].Computer + '#';
-                for (int i = 0; i < daten.Length; i++) {
+                for (int i = 1; i < daten.Length; i++) {
                     text = text + daten[i].Name + ';' + daten[i].Punkte + ";" + daten[i].Computer + '#';
                 }
 
@@ -58,7 +58,7 @@ namespace Memory {
             FileStream fs = null;
             StreamReader sr = null;
             int count = 0;
-            Datensatz[] daten = new Datensatz[1];
+            Datensatz[] daten = new Datensatz[0];
             string pfad = @"..\highscoreNormal.txt";
             using (fs = new FileStream(pfad, FileMode.OpenOrCreate)) {
                 if (fs.CanRead) {
@@ -94,7 +94,7 @@ namespace Memory {
             FileStream fs = null;
             StreamReader sr = null;
             int count = 0;
-            Datensatz[] daten = null;
+            Datensatz[] daten = new Datensatz[0];
             string pfad = @"..\highscoreSchwer.txt";
             using (fs = new FileStream(pfad, FileMode.OpenOrCreate)) {
                 if (fs.CanRead) {
@@ -105,9 +105,11 @@ namespace Memory {
 
                         zeile = sr.ReadLine();
                         string[] datensatz = zeile.Split('#');
-                        foreach (string inhalt in datensatz) {
+                        foreach (string inhalt in datensatz)
+                        {
                             string[] items = inhalt.Split(';');
-                            if (!string.IsNullOrEmpty(items[0]) && items[0] != " ") {
+                            if (!string.IsNullOrEmpty(items[0]) && items[0] != " ")
+                            {
 
                                 Array.Resize(ref daten, count + 1);
                                 daten[count] = new Datensatz(items[0], int.Parse(items[1]), double.Parse(items[2]));
@@ -150,7 +152,8 @@ namespace Memory {
             }
             
             Array.Resize(ref datensatzs, datensatzs.Length + 1);
-            datensatzs[datensatzs.Length-1] = new Datensatz(mensch.Name, mensch.Score, (computer.AnzahlRichtigerPaare / computer.AnzahlAufgedecktePaare) * 100);
+            double effektivität = computer.AnzahlRichtigerPaare*100 / computer.AnzahlAufgedecktePaare;
+            datensatzs[datensatzs.Length - 1] = new Datensatz(mensch.Name, mensch.Score, effektivität);
             bubbleSortSelfemade(ref datensatzs);
             if (computer.Difficulty == "Normal") {
                 WriteToFile(datensatzs);
