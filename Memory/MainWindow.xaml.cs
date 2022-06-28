@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,6 +19,12 @@ namespace Memory
         Random _random = null;
         public MainWindow()
         {
+
+            Log.Logger = new LoggerConfiguration()
+
+                            .WriteTo.File(@"C:\Temp\Log.txt", outputTemplate: "{ Timestamp:yyyy-MM-dd HH:mm:ss zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+
+                            .CreateLogger();
             InitializeComponent();
 
             IsAllButtonsEnabled(false);
@@ -201,7 +208,7 @@ namespace Memory
 
                 ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde
                 //Spiel Beenden wenn alle Karten paare gefunden sind
-                if (_mensch.AnzahlGefundenerPaare == 4 || _computer.AnzahlGefundenerPaare == 5)
+                if (_mensch.AnzahlGefundenerPaare + _computer.AnzahlGefundenerPaare == 8)
                 {
                     SpielBeenden();
                     return;
@@ -659,9 +666,10 @@ namespace Memory
             tBox_Button15.Text = _spielFeld.Feld[3, 2];
             tBox_Button16.Text = _spielFeld.Feld[3, 3];
 
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    _computer.VerfuegbareKarten.Add(new KnownCard(_spielFeld.Feld[i,j], i+1, j+1));
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 4; j++) {
+                    _computer.VerfuegbareKarten.Add(new KnownCard(_spielFeld.Feld[i, j], i + 1, j + 1));
+                    _mensch.VerfuegbareKarten.Add(new KnownCard(_spielFeld.Feld[i, j], i + 1, j + 1));
                 }
             }
 

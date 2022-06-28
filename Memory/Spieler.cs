@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Windows.Controls;
+using System.Windows;
 /*
  * Elternklasse zu Mensch und KI
  * Autoren: Alexander Bletsch, Anna Stork

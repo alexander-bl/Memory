@@ -174,7 +174,7 @@ namespace Memory {
             }
             
             Array.Resize(ref datensatzs, datensatzs.Length + 1);    //Erweitern des Arrays um ein Feld
-            double effektivität = computer.AnzahlRichtigerPaare*100 / computer.AnzahlAufgedecktePaare;  //Berechnung der Effektivität des Computers
+            double effektivität = (computer.AnzahlRichtigerPaare*100) / computer.AnzahlAufgedecktePaare;  //Berechnung der Effektivität des Computers
             datensatzs[datensatzs.Length - 1] = new Datensatz(mensch.Name, mensch.Score, effektivität); //Schreiben des neuen Datensatzes an die letzte Stelle des Arrays
             bubbleSortSelfemade(ref datensatzs);
             if (computer.Difficulty == "Normal") {  //Wenn Schwierigkeitsgrad Normal ist
