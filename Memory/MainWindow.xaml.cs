@@ -175,14 +175,15 @@ namespace Memory
                     {
 
                         //Punkte für richtiges paar für Computer
+                        _computer.AnzahlAufgedecktePaare++;
                         _computer.AnzahlRichtigerPaare++;
                     }
-
-
 
                     ButtonDeaktivieren(spieler);
 
                     //Wenn Karten paar nicht korrekt, dann zähler computer erhöhen
+                } else if (_computer.AktiveRunde) {
+                    _computer.AnzahlAufgedecktePaare++;
                 }
 
                 ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde

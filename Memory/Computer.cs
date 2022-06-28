@@ -10,7 +10,7 @@ namespace Memory {
     public class Computer : Spieler {
         string _difficulty;//Schwierigkeitsgrad des Computers
         int _anzahlRichtigerPaare;//Anzahl aller richtig aufgedeckten Karten paare
-        
+        int _anzahlAufgedecktePaare;//Anzahl aller Aufgedeckten Karten paare
 
         public string Difficulty {
             get => _difficulty;
@@ -22,6 +22,17 @@ namespace Memory {
                     throw new ArgumentException(
                         "Schwierigkeitsgrad ist nicht Normal oder Schwer!");
                 }
+            }
+        }
+
+        public int AnzahlAufgedecktePaare {
+            get => _anzahlAufgedecktePaare;
+            set {
+                if (value < 0) {
+                    throw new ArgumentOutOfRangeException(
+                        "Anzahl Aufgedeckter Paare ist kleiner 0!");
+                }
+                _anzahlAufgedecktePaare = value;
             }
         }
 
@@ -46,6 +57,7 @@ namespace Memory {
         public Computer(string difficulty, bool aktiveRunde) : base(aktiveRunde) {
             Difficulty = difficulty;
             AnzahlRichtigerPaare = 0;
+            AnzahlAufgedecktePaare = 0;
         }
 
         /// <summary>
