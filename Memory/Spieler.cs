@@ -84,11 +84,8 @@ namespace Memory {
             KnownCard card;
             int zahl;
             do {
-            //VerfuegbareKarten.Remove(aktcard);    
-
                 zahl = rnd.Next(VerfuegbareKarten.Count);
                 card = VerfuegbareKarten[zahl];
-            //VerfuegbareKarten.Add(aktcard);
 
             } while (aktcard.Spalte == card.Spalte && aktcard.Zeile == card.Zeile);
             //Wenn ausgesuchte Karte gleich bereits ausgewählte Karte nehme andere Karte

@@ -123,6 +123,8 @@ namespace Memory
                     _mensch.VerfuegbareKarten.Remove(spieler.OffeneKarten.Item2);
                     _computer.VerfuegbareKarten.Remove(spieler.OffeneKarten.Item1);
                     _computer.VerfuegbareKarten.Remove(spieler.OffeneKarten.Item2);
+                    _mensch.VerfuegbareKarten.TrimExcess();
+                    _computer.VerfuegbareKarten.TrimExcess();
 
                     kartenPaarRichtig = true;
                     spieler.AnzahlGefundenerPaare++;
@@ -130,7 +132,7 @@ namespace Memory
                     //Punkte für richtiges paar für Mensch 
                     if (_mensch.AktiveRunde)
                     {
-                        int zahl = (int)_mensch.Stopwatch.Elapsed.TotalSeconds;
+                        int zahl = (int)_mensch.Stopwatch.Elapsed.TotalMilliseconds/1000;
                         int newscore;
                         switch (zahl)
                         {
@@ -188,7 +190,7 @@ namespace Memory
 
                 ButtonContentHide(spieler);//Button Content Nicht Sichtbar machen nachdem Paar kontrolliert wurde
                 //Spiel Beenden wenn alle Karten paare gefunden sind
-                if (_mensch.AnzahlGefundenerPaare + _computer.AnzahlGefundenerPaare == 8)
+                if (_mensch.AnzahlGefundenerPaare == 4 || _computer.AnzahlGefundenerPaare == 5)
                 {
                     SpielBeenden();
                     return;
