@@ -10,7 +10,7 @@ namespace Memory {
     public class Computer : Spieler {
         string _difficulty;//Schwierigkeitsgrad des Computers
         int _anzahlRichtigerPaare;//Anzahl aller richtig aufgedeckten Karten paare
-        int _anzahlAufgedecktePaare;//Anzahl aller Aufgedeckten Karten paare
+        int _anzahlAufgedecktePaare;//Anzahl aller vom Computer Aufgedeckten Karten paare
 
         public string Difficulty {
             get => _difficulty;
@@ -60,6 +60,17 @@ namespace Memory {
             AnzahlAufgedecktePaare = 0;
         }
 
+        public Computer(string difficulty, int anzahlAufgedecktePaare,
+                        int anzahlRichtigerPaare, bool aktiveRunde)
+                        :base(aktiveRunde){
+
+            Difficulty = difficulty;
+            AnzahlAufgedecktePaare = anzahlAufgedecktePaare;
+            AnzahlRichtigerPaare = anzahlRichtigerPaare;
+        }
+
+
+
         /// <summary>
         /// Speichern("Merken") der Letzen aufgedeckten Karten
         /// </summary>
@@ -91,12 +102,11 @@ namespace Memory {
         /// <summary>
         /// Zufällige Karte auswählen
         /// </summary>
-        /// <param name="spielFeld"></param>
         /// <param name="rnd"></param>
         /// <param name="aktcard"></param>
         /// <returns></returns>
-        public override KnownCard Random(SpielFeld spielFeld, Random rnd, KnownCard aktcard) {
-            KnownCard card = base.Random(spielFeld, rnd, aktcard);
+        public override KnownCard Random(Random rnd, KnownCard aktcard) {
+            KnownCard card = base.Random(rnd, aktcard);
 
             return card;
         }

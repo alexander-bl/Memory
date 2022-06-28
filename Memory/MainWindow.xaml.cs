@@ -14,19 +14,19 @@ namespace Memory
     {
         Mensch _mensch = null;
         Computer _computer = null;
-        Button[] _buttons;
         SpielFeld _spielFeld = null;
         Random _random = null;
-        Highscore.Datensatz[] _datensatz;
         public MainWindow()
         {
             InitializeComponent();
-            _buttons = new Button[]{Button, Button2, Button3, Button4, Button4, Button5,
-                                Button6, Button7, Button8, Button9, Button10, Button11,
-                                Button12, Button13, Button14, Button15, Button16};
+
             IsAllButtonsEnabled(false);
         }
 
+        /// <summary>
+        /// Computer entscheidung welche Karte gewählt wird
+        /// </summary>
+        /// <param name="card"></param>
         private async void ComputerKarteanschauen(KnownCard card)
         {
             _computer.GeseheneKarten.Sort((s1, s2) => s1.Karte.CompareTo(s2.Karte));//Sortiere Karten Liste
@@ -60,10 +60,14 @@ namespace Memory
                     }
                 }
             }
-            KnownCard rndCard = _computer.Random(_spielFeld, _random, card);
+            KnownCard rndCard = _computer.Random(_random, card);
             await ButtonEvent(rndCard);
         }
 
+        /// <summary>
+        /// Alle Buttons Aktivieren/Deaktivieren
+        /// </summary>
+        /// <param name="isEnabled"></param>
         private void IsAllButtonsEnabled(bool isEnabled)
         {
             Button.IsEnabled = isEnabled;
@@ -84,6 +88,11 @@ namespace Memory
             Button16.IsEnabled = isEnabled;
         }
 
+        /// <summary>
+        /// AKtion bei Karten auswahl
+        /// </summary>
+        /// <param name="card"></param>
+        /// <returns></returns>
         private async Task ButtonEvent(KnownCard card)
         {
 
@@ -104,6 +113,8 @@ namespace Memory
             {
                 return;
             }
+
+            //Kein Doppeltes Drücken auf Karte möglich
             if (spieler.OffeneKarten.Item1.Zeile == card.Zeile 
                 && spieler.OffeneKarten.Item1.Spalte == card.Spalte) {
                 return;
@@ -132,7 +143,7 @@ namespace Memory
                     //Punkte für richtiges paar für Mensch 
                     if (_mensch.AktiveRunde)
                     {
-                        int zahl = (int)_mensch.Stopwatch.Elapsed.TotalMilliseconds/1000;
+                        int zahl = _mensch.Stopwatch.Elapsed.Seconds;
                         int newscore;
                         switch (zahl)
                         {
@@ -246,6 +257,13 @@ namespace Memory
             IsAllButtonsEnabled(false);
         }
 
+        /// <summary>
+        /// Entfernen Der Richtig aufgedeckten Karten aus dem Gedächnis
+        /// </summary>
+        /// <param name="spieler1"></param>
+        /// <param name="spieler2"></param>
+        /// <param name="karte1"></param>
+        /// <param name="karte2"></param>
         private void GedaechnisLoeschen(Spieler spieler1, Spieler spieler2,
                                         KnownCard karte1, KnownCard karte2)
         {
@@ -271,6 +289,10 @@ namespace Memory
             spieler2.GeseheneKarten.TrimExcess();
         }
 
+        /// <summary>
+        /// Deaktivieren des Richtig gefundenen Karten paars
+        /// </summary>
+        /// <param name="spieler"></param>
         private void ButtonDeaktivieren(Spieler spieler)
         {
 
@@ -379,6 +401,12 @@ namespace Memory
             }
         }
 
+        /// <summary>
+        /// Vergleich ob Karten gleich sind
+        /// </summary>
+        /// <param name="karte1"></param>
+        /// <param name="karte2"></param>
+        /// <returns></returns>
         private async Task<bool> KartenVergleich(KnownCard karte1, KnownCard karte2)
         {
             //Maus cursor auf warten symbol setzen und warten damit Spieler sich die Karten anschauen kann
@@ -396,6 +424,10 @@ namespace Memory
             return istGleicheKarte;
         }
 
+        /// <summary>
+        /// Mache Textboxen in Button nicht sichtbar
+        /// </summary>
+        /// <param name="spieler"></param>
         private void ButtonContentHide(Spieler spieler)
         {
             KnownCard[] versteckendeKarten = new KnownCard[] { spieler.OffeneKarten.Item1, spieler.OffeneKarten.Item2 };
@@ -488,6 +520,10 @@ namespace Memory
 
         }
 
+        /// <summary>
+        /// Mache Textboxen in Button sichtbar
+        /// </summary>
+        /// <param name="card"></param>
         private void ButtonContentShow(KnownCard card)
         {
             //Verstecken des karten paars
@@ -575,6 +611,11 @@ namespace Memory
             }
         }
 
+        /// <summary>
+        /// Erstellen eines neuen Spiels
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MenuItem_NeuesSpiel_Click(object sender, RoutedEventArgs e)
         {
             //Neues Dialog Fenster für neues Spiel erstellen Starten
@@ -599,15 +640,6 @@ namespace Memory
 
             //Buttons aktivieren
             IsAllButtonsEnabled(true);
-
-            if (_computer.Difficulty == "Normal")
-            {
-                _datensatz = Highscore.ReadFromFile();
-            }
-            else
-            {
-                _datensatz = Highscore.ReadFromFileSchwer();
-            }
 
 
             tBox_Button.Text = _spielFeld.Feld[0, 0];
@@ -636,6 +668,11 @@ namespace Memory
             _random = new Random();
         }
 
+        /// <summary>
+        /// Highscore Anzeigen
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MenuItem_Highscore_Click(object sender, RoutedEventArgs e)
         {
             if (_mensch != null)
@@ -646,6 +683,11 @@ namespace Memory
             highscoreFenster.ShowDialog();
         }
 
+        /// <summary>
+        /// Spiel Hilfe Anzeigen
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MenuItem_Hilfe_Click(object sender, RoutedEventArgs e)
         {
             FileStream fs;
@@ -669,6 +711,11 @@ namespace Memory
             MessageBox.Show(zeile, "Hilfe");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MenuItem_Hinweis_Click(object sender, RoutedEventArgs e)
         {
             if (_mensch == null)
@@ -712,6 +759,11 @@ namespace Memory
 
         }
 
+        /// <summary>
+        /// Wähle zufällige Karte aus
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void MenuItem_Zufall_Click(object sender, RoutedEventArgs e)
         {
             if (_mensch == null)
@@ -721,7 +773,7 @@ namespace Memory
                 return;
             }
 
-            KnownCard card = _mensch.Random(_spielFeld, _random, new KnownCard("", 0, 0));
+            KnownCard card = _mensch.Random(_random, new KnownCard("", 0, 0));
             await ButtonEvent(card);
         }
 
@@ -732,6 +784,11 @@ namespace Memory
          * Button Events
          * 
          */
+        /// <summary>
+        /// Event für manuelle Kartenauswahl
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             KnownCard card = new KnownCard(tBox_Button.Text, 1, 1);//Karte des Buttons

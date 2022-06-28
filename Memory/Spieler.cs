@@ -12,7 +12,7 @@ namespace Memory {
         List<KnownCard> _geseheneKarten;//Liste aller bereits gesehenen Karten
         Tuple<KnownCard, KnownCard> _offeneKarten;//Aktuell aufgedeckten Karten
         bool _aktiveRunde;//Ist Spieler aktuell an der Reihe?
-        int _anzahlGefundenerPaare;//Anzahl aller Gefundenen Karten paare
+        int _anzahlGefundenerPaare;//Anzahl aller Richtigen Gefundenen Karten paare
         List<KnownCard> _verfuegbareKarten; //Liste der noch verfügbaren Karten
 
         /// <summary>
@@ -27,6 +27,17 @@ namespace Memory {
             AktiveRunde = aktiveRunde;
             AnzahlGefundenerPaare = 0;
             VerfuegbareKarten = new List<KnownCard>();
+        }
+
+        protected Spieler(List<KnownCard> verfuegbareKarten, List<KnownCard> geseheneKarten,
+            Tuple<KnownCard, KnownCard> offeneKarten, bool aktiveRunde, 
+            int anzahlGefundenerPaare) {
+
+            VerfuegbareKarten = verfuegbareKarten;
+            GeseheneKarten = geseheneKarten;
+            OffeneKarten = offeneKarten;
+            AktiveRunde = aktiveRunde;
+            AnzahlGefundenerPaare = anzahlGefundenerPaare;
         }
 
         public List<KnownCard> VerfuegbareKarten {
@@ -76,11 +87,10 @@ namespace Memory {
         /// <summary>
         /// Zufällige Karte auswählen
         /// </summary>
-        /// <param name="spielFeld"></param>
         /// <param name="rnd"></param>
         /// <param name="aktcard"></param>
         /// <returns></returns>
-        public virtual KnownCard Random(SpielFeld spielFeld, Random rnd, KnownCard aktcard) {
+        public virtual KnownCard Random(Random rnd, KnownCard aktcard) {
             KnownCard card;
             int zahl;
             do {

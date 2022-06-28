@@ -22,6 +22,13 @@ namespace Memory {
             Stopwatch = new Stopwatch();
         }
 
+        public Mensch(string name, int score, Stopwatch stopwatch, bool aktiveRunde)
+                        :base(aktiveRunde){
+            Name = name;
+            Score = score;
+            Stopwatch = stopwatch;
+        }
+
         public string Name {
             get => _name;
             set {
@@ -32,7 +39,7 @@ namespace Memory {
                 if (value.Length < 2) {
                     throw new ArgumentOutOfRangeException("Name ist zu kurz! Mindestens 2 Zeichen lang.");
                 }
-                if (value == ";" || value == "#") {
+                if (value.Contains(";") || value.Contains("#")) {
                     throw new ArgumentException(
                             " Keine ; oder # Zeichen für Namen verwenden!");
                 }
@@ -69,12 +76,11 @@ namespace Memory {
         /// <summary>
         /// Zufällige Karte auswählen
         /// </summary>
-        /// <param name="spielFeld"></param>
         /// <param name="rnd"></param>
         /// <param name="aktcard"></param>
         /// <returns></returns>
-        public override KnownCard Random(SpielFeld spielFeld, Random rnd, KnownCard aktcard) {
-            KnownCard card = base.Random(spielFeld, rnd, aktcard);
+        public override KnownCard Random(Random rnd, KnownCard aktcard) {
+            KnownCard card = base.Random(rnd, aktcard);
 
             return card;
         }
