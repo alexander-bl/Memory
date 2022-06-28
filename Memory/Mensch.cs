@@ -95,6 +95,7 @@ namespace Memory {
             //Test ob Aufgedeckte Karte erste oder zweite Karte ist
             if (OffeneKarten.Item1.Karte == "") {
                 KnownCard emptyCard = new KnownCard("", 0, 0);
+                Stopwatch.Restart();
                 Stopwatch.Start();
                 OffeneKarten = new Tuple<KnownCard, KnownCard>(card, emptyCard);
                 return false;//false weil aufgedeckte Karte die erste Karte der Runde ist
